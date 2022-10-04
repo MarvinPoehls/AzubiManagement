@@ -1,6 +1,8 @@
 <?php
 
 $title = "Login";
+include "functions.php";
+$conn = getDatabaseConnection();
 include "header.php";
 
 $email = getRequestParameter("email");
@@ -10,8 +12,7 @@ $isDataWrong = false;
 session_start();
 
 if ($email !== false && $password !== false) {
-    if (isValid($email, "email")) {
-        $conn = getDatabaseConnection();
+    if (isValid($email, "email", $conn)) {
         $sql = "SELECT password FROM azubi WHERE email = '".$email."'";
         $result = executeMysqlQuery($conn, $sql);
         $row = mysqli_fetch_row($result);

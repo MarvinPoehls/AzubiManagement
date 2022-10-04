@@ -1,7 +1,8 @@
 <?php
 
 $title = "Azubi Liste";
-
+include "functions.php";
+$conn = getDatabaseConnection();
 include "header.php";
 include "loginCheck.php";
 
@@ -19,16 +20,16 @@ if(getRequestParameter("startpoint")){
 }
 
 $listSize = getRequestParameter("listSize", 10);
-$data = getAzubiData($filter, $listSize, $startpoint);
+$data = getAzubiData($filter, $listSize, $startpoint, $conn);
 
 if(getRequestParameter("deleteId") !== false){
-    deleteData(getRequestParameter("deleteId"));
+    deleteData(getRequestParameter("deleteId"), $conn);
     header("Refresh:0; url=azubiList.php");
 }
 
 foreach ($data as $azubi){
     if(getRequestParameter($azubi["id"]) == "on"){
-        deleteData($azubi["id"]);
+        deleteData($azubi["id"], $conn);
         header("Refresh:0; url=azubiList.php");
     }
 }
@@ -72,13 +73,13 @@ foreach ($data as $azubi){
             <a href="<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint - $listSize ?>&listSize=<?php echo $listSize ?>"><img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39092/preview.png' alt='vor'></a>
         <?php } ?>
         <?php
-        for($i = 0; $i < count(getAllIds())/$listSize; $i++){
+        for($i = 0; $i < count(getAllIds($conn))/$listSize; $i++){
             $start = $i * $listSize;
             $value = $i+1;
             ?>
             <a href='<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $start ?>&listSize=<?php echo $listSize ?>'><input class='paginationButton' name='startingpoint' type='button' value='<?php echo $value ?>'></a>
         <?php } ?>
-        <?php if ($startpoint < count(getAllIds())-$listSize) { ?>
+        <?php if ($startpoint < count(getAllIds($conn))-$listSize) { ?>
             <a href="<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint + $listSize ?>&listSize=<?php echo $listSize ?>"><img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39093/preview.png' alt='vor'></a>
         <?php } ?>
     </div>

@@ -1,14 +1,11 @@
 <?php
 
-    include "constants.php";
-
     function getDatabaseConnection()
     {
-
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "test";
+        $servername = getConfigParameter("servername");
+        $username = getConfigParameter("username");
+        $password = getConfigParameter("password");
+        $dbname = getConfigParameter("dbname");
         $conn = mysqli_connect($servername, $username, $password, $dbname);
 
         if (!$conn) {
@@ -32,8 +29,7 @@
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 
-    function addUserToAzubiDatabase($name, $birthday, $email, $github, $employmentstart, $pictureurl, $password){
-        $conn = getDatabaseConnection();
+    function addUserToAzubiDatabase($name, $birthday, $email, $github, $employmentstart, $pictureurl, $password, $conn){
         $password = encrypt($password);
 
         $sql = "INSERT INTO azubi (name, birthday, email, githubuser, employmentstart, pictureurl, password) 
@@ -48,8 +44,7 @@
         return mysqli_insert_id($conn);
     }
 
-    function addSkillsToDatabase($id,$preSkills, $newSkills){
-        $conn = getDatabaseConnection();
+    function addSkillsToDatabase($id,$preSkills, $newSkills, $conn){
         $sql = "SELECT skill FROM azubi_skills WHERE id=".$id;
         $result = executeMysqlQuery($conn, $sql);
 
@@ -116,8 +111,7 @@
         return true;
     }
 
-    function loadUser($inputId){
-        $conn = getDatabaseConnection();
+    function loadUser($inputId, $conn){
         $sql = "SELECT * FROM azubi WHERE id =" . $inputId;
         $result = executeMysqlQuery($conn, $sql);
         if ($answer = mysqli_fetch_assoc($result)) {
@@ -126,7 +120,7 @@
         return array("name" => "", "birthday" => "", "email" => "", "githubuser" => "", "employmentstart" => "", "pictureurl" => "", "password" => "");
     }
 
-    function insertData($azubiData, $azubiPreSkills, $azubiNewSkills){
+    function insertData($azubiData, $azubiPreSkills, $azubiNewSkills, $conn){
         if(isDataComplete($azubiData, $azubiPreSkills, $azubiNewSkills)){
             $id = addUserToAzubiDatabase(
                 $azubiData["name"],
@@ -135,29 +129,29 @@
                 $azubiData["githubuser"],
                 $azubiData["employmentstart"],
                 $azubiData["pictureurl"],
-                $azubiData["password"]
+                $azubiData["password"],
+                $conn
             );
 
             addSkillsToDatabase(
                 $id,
                 $azubiPreSkills,
-                $azubiNewSkills
+                $azubiNewSkills,
+                $conn
             );
         }
     }
 
-    function updateData($inputId, $data, $preSkills, $newSkills){
-        $conn = getDatabaseConnection();
+    function updateData($inputId, $data, $preSkills, $newSkills, $conn){
         $sql = "UPDATE azubi  SET name='".$data['name']."',birthday='".$data['birthday']."',email='".$data['email']."',
                     githubuser='".$data['githubuser']."',employmentstart='".$data['employmentstart']."',pictureurl='".$data['pictureurl']."',password='".encrypt($data['password'])."' 
                     WHERE id =".$inputId;
         executeMysqlQuery($conn, $sql);
 
-        addSkillsToDatabase($inputId, $preSkills, $newSkills);
+        addSkillsToDatabase($inputId, $preSkills, $newSkills, $conn);
     }
 
-    function deleteData($inputId){
-        $conn = getDatabaseConnection();
+    function deleteData($inputId, $conn){
         $sql = "DELETE FROM azubi  
                     WHERE id =".$inputId;
         executeMysqlQuery($conn, $sql);
@@ -166,8 +160,7 @@
         executeMysqlQuery($conn, $sql);
     }
 
-    function loadSkills($inputId, $type){
-        $conn = getDatabaseConnection();
+    function loadSkills($inputId, $type, $conn){
         $sql = "SELECT skill FROM azubi_skills WHERE azubi_id = ".$inputId. " AND type ='" . $type."'";
         $result = executeMysqlQuery($conn, $sql);
         $answer = "";
@@ -177,28 +170,24 @@
         return rtrim($answer, ", ");
     }
 
-    function getAzubiData($filter, $listSize, $startpoint){
+    function getAzubiData($filter, $listSize, $startpoint, $conn){
         $filter = trim($filter);
         $sql = "SELECT * FROM azubi";
         if($filter != ""){
             $sql .= " WHERE name OR email LIKE '%".$filter."%'";
         }
         $sql .= " LIMIT ".$listSize." OFFSET ".$startpoint;
-
-        $conn = getDatabaseConnection();
         $result = executeMysqlQuery($conn, $sql);
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 
-    function getAllIds(){
+    function getAllIds($conn){
         $sql = "SELECT id FROM azubi";
-        $conn = getDatabaseConnection();
         $result = executeMysqlQuery($conn, $sql);
         $array= [];
         while($row = mysqli_fetch_row($result)){
             $array[] = $row[0];
         }
-        mysqli_close($conn);
         return $array;
     }
 
@@ -207,9 +196,8 @@
         exit();
     }
 
-    function isValid($entry, $column){
+    function isValid($entry, $column, $conn){
         $sql = "SELECT ".$column." FROM azubi";
-        $conn = getDatabaseConnection();
         $result = executeMysqlQuery($conn, $sql);
         while($row = mysqli_fetch_row($result)){
             if($row[0] == $entry){
@@ -220,9 +208,20 @@
     }
 
     function encrypt($password){
-        return md5($password.SALT);
+        return md5($password.getConfigParameter("salt"));
     }
 
     function getUrl($data){
-        return "http://localhost/azubiManagement/".$data;
+        return getConfigParameter("path").$data;
+    }
+
+    function getConfigParameter($name){
+        if (file_exists("config.php")){
+            include "config.php";
+            if(isset($data[$name])){
+                return $data[$name];
+            }
+            return false;
+        }
+        die("Config Data is missing.");
     }

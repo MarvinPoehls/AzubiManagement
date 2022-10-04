@@ -1,17 +1,15 @@
 <?php
 
+include "functions.php";
+$conn = getDatabaseConnection();
 include "header.php";
 include "loginCheck.php";
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "test";
 $azubiIds = [];
 $azubiData = [];
 $azubiPreSkills = [];
 $azubiNewSkills = [];
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());

@@ -1,11 +1,13 @@
 <?php
     $title = "Azubi hinzufügen";
+    include "functions.php";
+    $conn = getDatabaseConnection();
     include "header.php";
     include "loginCheck.php";
     $azubiId = getRequestParameter("azubiId");
 
     if(getRequestParameter("deleteId") !== false){
-        deleteData(getRequestParameter("deleteId"));
+        deleteData(getRequestParameter("deleteId"), $conn);
     } elseif (getRequestParameter("name")) {
         $azubiData = ["name" => getRequestParameter("name"),
             "birthday" => getRequestParameter("birthday"),
@@ -18,9 +20,9 @@
         $azubiNewSkills = explode(",", getRequestParameter("new"));
 
         if (!empty($azubiId)) {
-            updateData($azubiId, $azubiData, $azubiPreSkills, $azubiNewSkills);
+            updateData($azubiId, $azubiData, $azubiPreSkills, $azubiNewSkills, $conn);
         } else {
-            insertData($azubiData,$azubiPreSkills, $azubiNewSkills);
+            insertData($azubiData,$azubiPreSkills, $azubiNewSkills, $conn);
         }
     }
 
@@ -29,9 +31,9 @@
     $azubiData = array("name" => "", "birthday" => "", "email" => "", "githubuser" => "", "employmentstart" => "", "pictureurl" => "");
 
     if(!empty($azubiId)){
-        $azubiData = loadUser($azubiId);
-        $azubiSkills["pre"] = loadSkills($azubiId, "pre");
-        $azubiSkills["new"] = loadSkills($azubiId, "new");
+        $azubiData = loadUser($azubiId, $conn);
+        $azubiSkills["pre"] = loadSkills($azubiId, "pre", $conn);
+        $azubiSkills["new"] = loadSkills($azubiId, "new", $conn);
     }
 
 

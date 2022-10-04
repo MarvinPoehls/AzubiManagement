@@ -1,9 +1,9 @@
 <?php
+    include "functions.php";
+    $conn = getDatabaseConnection();
     include "header.php";
     include "loginCheck.php";
-
-    $conn = getDatabaseConnection();
-
+    
     $sqlPath = "SELECT * FROM azubi";
     $result = mysqli_query($conn, $sqlPath);
     $azubiData = mysqli_fetch_all($result,MYSQLI_ASSOC);
