@@ -109,7 +109,7 @@
         ) {
             return false;
         }
-        if($azubiData["password"] != trim(getRequestParameter("repeatPassword").SALT)){
+        if($azubiData["password"] != trim(encrypt(getRequestParameter("repeatPassword")))){
             echo "Passwort falsch wiederholt";
             return false;
         }
@@ -140,8 +140,8 @@
 
             addSkillsToDatabase(
                 $id,
-                getRequestParameter("pre"),
-                getRequestParameter("new")
+                $azubiPreSkills,
+                $azubiNewSkills
             );
         }
     }

@@ -13,7 +13,7 @@
             "githubuser" => getRequestParameter("githubuser"),
             "employmentstart" => getRequestParameter("employmentstart"),
             "pictureurl" => getRequestParameter("pictureurl"),
-            "password" => getRequestParameter("password")];
+            "password" => encrypt(getRequestParameter("password"))];
         $azubiPreSkills = explode(",", getRequestParameter("pre"));
         $azubiNewSkills = explode(",", getRequestParameter("new"));
 
