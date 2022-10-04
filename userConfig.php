@@ -3,10 +3,10 @@
 //rename this file to "config.php" and fill the data array to make it work
 
 $data = [
-    "path" => "",           //the data path
-    "salt" => "",           //salt for encryption
-    "servername" => "",     //servername of database
-    "username" => "",       //username to access database
-    "password" => "",       //password to access database
-    "dbname" => ""          //your database name
+    "path" => "YOUR_VALUE",           //the data path
+    "salt" => "YOUR_VALUE",           //salt for encryption
+    "servername" => "YOUR_VALUE",     //servername of database
+    "username" => "YOUR_VALUE",       //username to access database
+    "password" => "YOUR_VALUE",       //password to access database
+    "dbname" => "YOUR_VALUE"          //your database name
 ];
