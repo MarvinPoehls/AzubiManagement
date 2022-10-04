@@ -3,7 +3,7 @@
     $conn = getDatabaseConnection();
     include "header.php";
     include "loginCheck.php";
-    
+
     $sqlPath = "SELECT * FROM azubi";
     $result = mysqli_query($conn, $sqlPath);
     $azubiData = mysqli_fetch_all($result,MYSQLI_ASSOC);
