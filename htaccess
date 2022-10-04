@@ -1,0 +1,4 @@
+AuthName "Login-Bereich"
+AuthType Basic
+AuthUserFile C:/xampp/xampp/htdocs/.htpasswd
+require valid-user

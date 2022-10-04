@@ -1,0 +1,501 @@
+* {
+    font-family: "Segoe UI";
+}
+
+body {
+    background-color: #eeeeee;
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 15px 0 0 30px;
+    color: #505050;
+}
+
+a {
+    color: #f60;
+    text-decoration: none;
+}
+
+.mainContent {
+    background-color: white;
+    padding: 20px;
+    margin: 0 auto 0px;
+    width: 900px;
+    min-height: 95.8vh;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.headerLink{
+    float: left;
+}
+
+.info {
+    float: left;
+    list-style-type: none;
+    padding: 0px;
+    margin-left: 250px;
+    margin-top: 10px;
+    width: 72%;
+}
+
+.profil{
+    float: left;
+    background-color: rgba(225,225,225,1);
+    width: 250px;
+    border-radius: 5px;
+    margin: 20px;
+    padding: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.profil:hover{
+    background-color: rgba(150,150,150,0.5);
+}
+
+.profilLink{
+    color: #2f2f2f;
+}
+
+.profilName{
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.coworkerFoto{
+    display: block;
+    width: 250px;
+    border-radius: 5px;
+}
+
+.foto {
+    position: absolute;
+}
+
+.foto img {
+    float: left;
+    width: 200px;
+    margin-right:30px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.logo {
+    float: right;
+    display: block;
+}
+
+.logoTwo{
+    width: 200px;
+    float: left;
+}
+
+.logoText{
+    font-weight: bold;
+    color: #424242;
+}
+
+.logo img {
+    object-fit: cover;
+    width: 125px;
+}
+
+.job {
+    color: grey;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.birthday {
+    margin-bottom: 20px;
+}
+
+.email {
+    margin-bottom: 20px;
+}
+
+.github {
+    margin-bottom: 20px;
+}
+
+.github a {
+    color: black;
+    text-decoration: underline;
+}
+
+.clear {
+    clear: both;
+}
+
+.knowledge {
+    margin-top: -5px;
+    display: block;
+}
+
+.strongHr {
+    height: 2px;
+    color: black;
+    background-color: black;
+}
+
+.learned {
+    list-style-type: none;
+}
+
+.learned li:before {
+    content: '-';
+    position: absolute;
+    margin-left: -15px;
+}
+
+.date {
+    float: right;
+}
+
+.inputData{
+    margin: 20px 0 20px 30px;
+}
+
+.inputData input{
+    width: 300px;
+    font-size: 22px;
+    color: #2f2f2f;
+    background-color: #fefefe;
+    border-color: #efefef;
+    border-radius: 10px;
+}
+
+.inputData input:hover{
+    background-color: #b0b0b0;
+}
+
+.inputData label{
+    margin-bottom: 0;
+}
+
+.newAzubiHeader{
+    margin: 0 20% 30px 30px;
+}
+
+.submit{
+    margin: 0 0 0 30px;
+    border: none;
+    border-radius: 2px;
+    padding: 5px;
+    color: #ececec;
+    font-weight: bold;
+    background-color: #2a2727;
+    box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.25)
+}
+
+.submit:hover{
+    background-color: #000000;
+    color: #e1e1e1;
+}
+
+.submitId:hover{
+    background-color: #9f9f9f;
+}
+
+.submitId{
+    margin: 0 0 0 10px;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-color: #a9a9a9;
+    color: #505050;
+    font-weight: bold;
+    background-color: #b7b7b7;
+    float: left;
+}
+
+.azubiId{
+    margin: 0;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    border-color: #a9a9a9;
+    color: #7c7c7c;
+    font-weight: bold;
+    background-color: #adadad;
+    float: left;
+    width: 50px;
+}
+
+.skillDiv{
+    float: right;
+    margin-right: 0;
+    width: 400px;
+}
+
+.passwordDiv{
+    float: right;
+    margin-right: 0;
+    width: 400px;
+}
+
+.dataDiv{
+    float: left;
+    width: 500px;
+}
+.edit{
+    margin-left: 40px;
+}
+
+.nameList, .emailList, .birthdayList{
+    margin: 0;
+    padding-left: 10px;
+    border: 1px solid #7c7c7c;
+    float: left;
+    list-style: none;
+    background-color: #b7b7b7;
+}
+
+.listElement{
+    border: 1px solid #7c7c7c;
+    border-right: 0px;
+    border-top: 0px;
+    margin: 0;
+    background-color: #dcdcdc;
+    padding: 10px;
+}
+
+.listContainer{
+    margin: 30px;
+}
+
+.listTitle{
+    border: 1px solid #7c7c7c;
+    border-right: 0px;
+    border-top: 0px;
+    margin: 0;
+    background-color: whitesmoke;
+    padding: 10px;
+    font-weight: bold;
+    color: #505050;
+}
+
+.deleteButton{
+    width: 20px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #cb5656;
+    background-color: #e35f5f;
+}
+
+.editButton{
+    width: 20px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #5cb05c;
+    background-color: #76e376;
+}
+
+.editButton:hover{
+    background-color: #5cb05c;
+}
+
+.deleteButton:hover{
+    background-color: #cb5656;
+}
+
+.box{
+    width: 20px;
+    margin: 15px;
+    float: left;
+}
+
+.checkboxList, .deleteList, .editList{
+    float: left;
+    margin-top: 42px;
+    padding: 0;
+}
+
+.newUserButton{
+    float: left;
+    margin: 0 0 10px 20px;
+    border-radius: 3px;
+    color: #505050;
+    font-weight: bold;
+    background-color: white;
+    border: none;
+    box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.25);
+    padding: 5px;
+}
+
+.deleteUserButton{
+    float: left;
+    margin: 0 440px 0 20px;
+    border-radius: 3px;
+    color: #505050;
+    font-weight: bold;
+    background-color: white;
+    border: none;
+    box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.25);
+    padding: 5px;
+}
+
+.deleteUserButton:hover, .newUserButton:hover{
+    background-color: #d0d0d0;
+}
+
+.search{
+    float: left;
+    width: 757px;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border-color: #dadada;
+    background-color: white;
+}
+
+.searchButton{
+    float: left;
+    padding: 5px;
+    background: url("https://cdn-icons-png.flaticon.com/512/61/61088.png");
+    background-size: 100%;
+    border-radius: 5px;
+    border-color: #dadada;
+    height: 30px;
+    width: 30px;
+    border-width: 2px;
+}
+
+.searchButton:hover{
+    background-color: #d7d7d7;
+}
+
+.searchbar{
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.pagination{
+    margin: 0 0 10px 20px;
+}
+
+.paginationButton{
+    color: #505050;
+    background-color: white;
+    border-radius: 50px;
+    border: 1px solid #505050;
+    margin: 2px;
+}
+
+.selectedPaginationButton{
+    color: white;
+    background-color: #505050;
+    border-radius: 50px;
+    border: 1px solid #505050;
+    margin: 2px;
+}
+
+.paginationButton:hover{
+    background-color: #505050;
+    color: white;
+}
+
+.azubiTable{
+    border: 2px solid #dcdcdc;
+    float: left;
+    margin: 20px;
+    width: 800px;
+    border-spacing: 0;
+}
+
+.tableHeader{
+    text-indent: 10px;
+    color: #424242;
+    font-weight: bold;
+    padding: 8px;
+}
+
+.tableData{
+    text-indent: 10px;
+    padding: 3px;
+}
+
+.tableButtons{
+    border: 1px solid #e1e1e1;
+    text-indent: 10px;
+    padding: 3px;
+    width: 80px;
+}
+
+.tableCheckbox{
+    border: 1px solid #e1e1e1;
+    padding: 3px;
+    width: 20px;
+}
+
+.paginationArrow{
+    width: 10px;
+}
+
+.listSizeMenu{
+    margin: 0 0 0 20px;
+    float: left;
+}
+
+tr:nth-child(even) {
+    background: #FFF
+}
+
+tr:nth-child(odd) {
+    background: #eaeaea
+}
+
+.submitSize{
+    background: white url("https://cdn.icon-icons.com/icons2/510/PNG/512/checkmark_icon-icons.com_50429.png");
+    background-size: 100%;
+    border-color: #858484;
+    border-radius: 3px;
+    border-width: 1px;
+}
+
+.submitSize:hover{
+    background-color: #e0e0e0;
+}
+
+.submitLogin{
+    background-color: white;
+    border: none;
+    box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.25);
+    padding: 5px;
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+
+.submitLogin:hover{
+    background-color: #e0e0e0;
+}
+
+.loginInput input{
+    width: 300px;
+    font-size: 22px;
+    color: #2f2f2f;
+    background-color: white;
+    border-color: #efefef;
+    border-radius: 10px;
+    margin-bottom: 50px;
+}
+
+.loginInput input:hover{
+    background-color: #ececec;
+}
+
+.loginInput{
+    margin: 30px;
+}
+
+.loginForm{
+    border: 1px solid #b6b6b6;
+    border-radius: 5px;
+    width: 400px;
+    margin: 100px auto;
+    padding: 10px;
+}
+
+.errorMessage{
+    color: #cc2222;
+    margin-left: 30px;
+}
