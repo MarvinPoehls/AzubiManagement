@@ -9,7 +9,7 @@
     $azubiData = mysqli_fetch_all($result,MYSQLI_ASSOC);
 
     $title = "Azubi Team";
-            foreach($azubiData as $azubi) {
+            foreach ($azubiData as $azubi) {
 ?>
                 <a class="profilLink" href="<?php echo getUrl("fatchipSite.php") ?>.?id=<?php echo $azubi["id"] ?>">
                     <div class="profil">

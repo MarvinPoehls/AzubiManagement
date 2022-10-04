@@ -7,13 +7,13 @@ include "header.php";
 include "loginCheck.php";
 
 
-if(getRequestParameter("filter")){
+if (getRequestParameter("filter")) {
     $filter = getRequestParameter("filter");
 } else {
     $filter = " ";
 }
 
-if(getRequestParameter("startpoint")){
+if (getRequestParameter("startpoint")) {
     $startpoint = getRequestParameter("startpoint");
 } else{
     $startpoint = 0;
@@ -22,13 +22,13 @@ if(getRequestParameter("startpoint")){
 $listSize = getRequestParameter("listSize", 10);
 $data = getAzubiData($filter, $listSize, $startpoint, $conn);
 
-if(getRequestParameter("deleteId") !== false){
+if (getRequestParameter("deleteId") !== false) {
     deleteData(getRequestParameter("deleteId"), $conn);
     header("Refresh:0; url=azubiList.php");
 }
 
 foreach ($data as $azubi){
-    if(getRequestParameter($azubi["id"]) == "on"){
+    if (getRequestParameter($azubi["id"]) == "on") {
         deleteData($azubi["id"], $conn);
         header("Refresh:0; url=azubiList.php");
     }
