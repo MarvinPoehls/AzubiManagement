@@ -1,6 +1,6 @@
 <?php
 
-include "functions.php";
+include "header.php";
 include "loginCheck.php";
 
 $servername = "localhost";
@@ -65,7 +65,6 @@ function atFatchipSince($startDay, $startMonth, $startYear)
 $title = $azubiData["name"];
 $headline = "Azubi";
 
-include "header.php"
 ?>
             <div class="foto">
                 <img src="<?php echo getPictureUrl($azubiData["pictureurl"])?>" alt="Mitarbeiter Foto">
@@ -76,12 +75,12 @@ include "header.php"
                 <p class="birthday">Geb.: <?php echo $azubiData["birthday"] ?></p>
                 <p class="email">
                     Email:
-                    <a href="mailto:marvinpoehls@fatchip.de"><?php echo $azubiData["email"] ?></a>
+                    <a href="mailto:"<?php echo $azubiData["email"] ?>><?php echo $azubiData["email"] ?></a>
                 </p>
 
                 <p class="github">
                     GitHub:
-                    <a href="https://github.com/MarvinPoehls" target="_blank"><?php echo $azubiData["githubuser"] ?></a>
+                    <a href="https://github.com/<?php echo $azubiData["githubuser"] ?>" target="_blank"><?php echo $azubiData["githubuser"] ?></a>
                 </p>
                 <p> <?php echo atFatchipSince(1,9,20); ?> </p>
             </div>

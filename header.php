@@ -1,3 +1,5 @@
+<?php include "functions.php"; ?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,7 +11,7 @@
                 echo $title;
             ?>
         </title>
-        <link rel="stylesheet" href="styles2.css">
+        <link rel="stylesheet" href=<?php echo getUrl("styles2.css") ?>>
     </head>
     <body>
         <div class = "mainContent">
@@ -25,9 +27,9 @@
                 ?>
             </h1>
             <div style="margin: 0 0 0 30px">
-                <p class="headerLink"><a href="http://localhost/addAzubi.php">Azubi hinzufügen</a> | </p>
-                <p class="headerLink"><a href="http://localhost/azubiList.php">Azubi Liste </a> | </p>
-                <p class="headerLink"><a href="http://localhost/fatchipTeam.php">Azubi Team</a> </p>
+                <p class="headerLink"><a href=<?php echo getUrl("addAzubi.php") ?>>Azubi hinzufügen</a> | </p>
+                <p class="headerLink"><a href=<?php echo getUrl("azubiList.php") ?>>Azubi Liste </a> | </p>
+                <p class="headerLink"><a href=<?php echo getUrl("fatchipTeam.php") ?>>Azubi Team</a> </p>
             </div>
             <div class="clear"></div>
             <hr>

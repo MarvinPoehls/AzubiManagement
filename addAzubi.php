@@ -1,7 +1,6 @@
 <?php
     $title = "Azubi hinzufügen";
     include "header.php";
-    include "functions.php";
     include "loginCheck.php";
     $azubiId = getRequestParameter("azubiId");
 
@@ -38,7 +37,7 @@
 
 ?>
 
-<form action="addAzubi.php" method="post">
+<form action="<?php echo getUrl("addAzubi.php") ?>" method="post">
     <input type="hidden" name="azubiId" value="<?php echo $azubiId ?>">
     <div class="dataDiv">
         <div class="inputData">
@@ -90,7 +89,7 @@
     </div>
 </form>
 <div class="clear"></div>
-<form class="delete" action="addAzubi.php" method="post">
+<form class="delete" action="<?php echo getUrl("addAzubi.php") ?>" method="post">
     <p><input class="submit" type="submit" value="Löschen"></p>
     <input type="hidden" name="deleteId" value = "<?php echo $azubiId ?>">
 </form>

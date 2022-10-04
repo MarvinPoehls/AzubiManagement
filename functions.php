@@ -222,3 +222,7 @@
     function encrypt($password){
         return md5($password.SALT);
     }
+
+    function getUrl($data){
+        return "http://localhost/azubiManagement/".$data;
+    }

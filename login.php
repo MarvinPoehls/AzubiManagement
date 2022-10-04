@@ -2,7 +2,6 @@
 
 $title = "Login";
 include "header.php";
-include "functions.php";
 
 $email = getRequestParameter("email");
 $password = getRequestParameter("password");
@@ -31,7 +30,7 @@ if ($email !== false && $password !== false) {
 }
 
 ?>
-<form class="loginForm" action="login.php" method="post">
+<form class="loginForm" action="<?php echo getUrl("login.php") ?>" method="post">
     <h2>In Azubi Seite einloggen</h2>
     <div class="loginInput">
         <label for="user"> Email: </label>
