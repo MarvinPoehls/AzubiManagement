@@ -1,31 +1,15 @@
 <?php
 
 include "functions.php";
-$conn = getDatabaseConnection();
 include "header.php";
 include "loginCheck.php";
-
-$azubiIds = [];
-$azubiData = [];
-$azubiPreSkills = [];
-$azubiNewSkills = [];
-
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+include "classes/Azubi.php";
 
 $id = getRequestParameter("id",2);
+$azubi = new Azubi($id);
 
-$sqlPath = "SELECT * FROM azubi WHERE id =" . $id;
-$result = mysqli_query($conn, $sqlPath);
-$azubiData = mysqli_fetch_assoc($result);
-
-$azubiPreSkills = getAzubiSkillsByType($conn, $id ,'pre');
-
-$azubiNewSkills = getAzubiSkillsByType($conn, $id ,'new');
-
-mysqli_close($conn);
+$title = $azubi->getName();
+$headline = "Azubi";
 
 function getPictureUrl($url){
     if(empty($url)){
@@ -59,59 +43,55 @@ function atFatchipSince($startDay, $startMonth, $startYear)
     }
     return "Bei Fatchip angestellt seit " . $day . " Tagen, " . $month . " Monaten und " . $year . " Jahren.";
 }
-
-$title = $azubiData["name"];
-$headline = "Azubi";
-
 ?>
             <div class="foto">
-                <img src="<?php echo getPictureUrl($azubiData["pictureurl"])?>" alt="Mitarbeiter Foto">
+                <img src="<?php echo getPictureUrl($azubi->getPictureurl())?>" alt="Mitarbeiter Foto">
             </div>
             <div class = info>
-                <h1><?php echo $azubiData["name"] ?></h1>
+                <h1><?php echo $azubi->getName(); ?></h1>
                 <p class="job">Azubi zum Fachinformatiker für Anwendungsentwicklung</p>
-                <p class="birthday">Geb.: <?php echo $azubiData["birthday"] ?></p>
+                <p class="birthday">Geb.: <?php echo $azubi->getBirthday(); ?></p>
                 <p class="email">
                     Email:
-                    <a href="mailto:"<?php echo $azubiData["email"] ?>><?php echo $azubiData["email"] ?></a>
+                    <a href="mailto:"<?php echo $azubi->getEmail(); ?>><?php echo $azubi->getEmail(); ?></a>
                 </p>
 
                 <p class="github">
                     GitHub:
-                    <a href="https://github.com/<?php echo $azubiData["githubuser"] ?>" target="_blank"><?php echo $azubiData["githubuser"] ?></a>
+                    <a href="https://github.com/<?php echo $azubi->getGithubuser(); ?>" target="_blank"><?php echo $azubi->getGithubuser(); ?></a>
                 </p>
-                <p> <?php echo atFatchipSince(1,9,20); ?> </p>
+                <p> <?php echo atFatchipSince(1,9,2022); ?> </p>
             </div>
             <div class="clear"></div>
             <div class="knowledge">
                 <hr class="strongHr">
                 <ol>
                     <?php
-                        if (count($azubiPreSkills)  > 0) {
+                        if (!empty($azubi->getPreSkills())) {
                             echo "<p>Vorkenntnisse in Programmierung:</p>";
-                            foreach ($azubiPreSkills as $skill){
-                                echo "<li>". $skill["skill"] ."</li>";
+                            foreach ($azubi->getPreSkills() as $skill){
+                                echo "<li>". $skill ."</li>";
                             }
                         }
                     ?>
                 </ol>
                 <?php
-                    if(count($azubiPreSkills) != 0 && count($azubiNewSkills) != 0){
+                    if(!empty($azubi->getPreSkills()) && !empty($azubi->getNewSkills())){
                         echo "<hr>";
                     }
                 ?>
                 <ul class="learned">
                     <?php
-                        if (count($azubiNewSkills)  > 0) {
+                        if (!empty($azubi->getNewSkills())) {
                             echo "<p>Bei Fatchip bisher gelernt:</p>";
-                            foreach ($azubiNewSkills as $skill){
-                                echo "<li>". $skill["skill"] ."</li>";
+                            foreach ($azubi->getNewSkills() as $skill){
+                                echo "<li>". $skill ."</li>";
                             }
                         }
                     ?>
                 </ul>
                 <?php
-                if(count($azubiPreSkills) != 0 && count($azubiNewSkills) != 0){
+                if(!empty($azubi->getPreSkills()) && empty($azubi->getNewSkills())){
                     echo "<hr class='strongHr'>";
                 }
                 ?>

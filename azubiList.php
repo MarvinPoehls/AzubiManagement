@@ -2,9 +2,9 @@
 
 $title = "Azubi Liste";
 include "functions.php";
-$conn = getDatabaseConnection();
 include "header.php";
 include "loginCheck.php";
+include "classes/Azubi.php";
 
 
 if (getRequestParameter("filter")) {
@@ -20,16 +20,16 @@ if (getRequestParameter("startpoint")) {
 }
 
 $listSize = getRequestParameter("listSize", 10);
-$data = getAzubiData($filter, $listSize, $startpoint, $conn);
+$azubis = getAzubiData($filter, $listSize, $startpoint, DatabaseConnection::getConnection());
 
 if (getRequestParameter("deleteId") !== false) {
-    deleteData(getRequestParameter("deleteId"), $conn);
+    deleteData(getRequestParameter("deleteId"), DatabaseConnection::getConnection());
     header("Refresh:0; url=azubiList.php");
 }
 
-foreach ($data as $azubi){
-    if (getRequestParameter($azubi["id"]) == "on") {
-        deleteData($azubi["id"], $conn);
+foreach ($azubis as $azubi){
+    if (getRequestParameter($azubi->getId()) == "on") {
+        deleteData($azubi->getId(), $azubi->getConn);
         header("Refresh:0; url=azubiList.php");
     }
 }
@@ -49,15 +49,15 @@ foreach ($data as $azubi){
             <td class="tableHeader">Email</td>
             <td class="tableHeader"></td>
         </tr>
-        <?php foreach($data as $azubi) {?>
+        <?php foreach($azubis as $azubi) {?>
             <tr>
-                <td class="tableCheckbox"><input type="checkbox" name="<?php echo $azubi["id"] ?>"></td>
-                <td class="tableData"><?php echo $azubi["name"] ?></td>
-                <td class="tableData"><?php echo $azubi["birthday"] ?></td>
-                <td class="tableData"><?php echo $azubi["email"] ?></td>
+                <td class="tableCheckbox"><input type="checkbox" name="<?php echo $azubi->getId() ?>"></td>
+                <td class="tableData"><?php echo $azubi->getName() ?></td>
+                <td class="tableData"><?php echo $azubi->getBirthday() ?></td>
+                <td class="tableData"><?php echo $azubi->getEmail() ?></td>
                 <td class="tableButtons">
-                    <a href="<?php echo getUrl("addAzubi.php?azubiId=".$azubi["id"]) ?>"><img class='editButton' src='https://cdn-icons-png.flaticon.com/512/84/84380.png' alt='edit'></a>
-                    <a href="<?php echo getUrl("azubiList.php?deleteId=".$azubi["id"]) ?>"><img class='deleteButton' src='https://cdn-icons-png.flaticon.com/512/1345/1345874.png' alt='edit'></a>
+                    <a href="<?php echo getUrl("addAzubi.php?azubiId=".$azubi->getId()) ?>"><img class='editButton' src='https://cdn-icons-png.flaticon.com/512/84/84380.png' alt='edit'></a>
+                    <a href="<?php echo getUrl("azubiList.php?deleteId=".$azubi->getId()) ?>"><img class='deleteButton' src='https://cdn-icons-png.flaticon.com/512/1345/1345874.png' alt='edit'></a>
                 </td>
             </tr>
         <?php } ?>
@@ -73,13 +73,13 @@ foreach ($data as $azubi){
             <a href="<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint - $listSize ?>&listSize=<?php echo $listSize ?>"><img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39092/preview.png' alt='vor'></a>
         <?php } ?>
         <?php
-        for($i = 0; $i < count(getAllIds($conn))/$listSize; $i++){
+        for($i = 0; $i < count(getAllIds(DatabaseConnection::getConnection()))/$listSize; $i++){
             $start = $i * $listSize;
             $value = $i+1;
             ?>
             <a href='<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $start ?>&listSize=<?php echo $listSize ?>'><input class='paginationButton' name='startingpoint' type='button' value='<?php echo $value ?>'></a>
         <?php } ?>
-        <?php if ($startpoint < count(getAllIds($conn))-$listSize) { ?>
+        <?php if ($startpoint < count(getAllIds(DatabaseConnection::getConnection()))-$listSize) { ?>
             <a href="<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint + $listSize ?>&listSize=<?php echo $listSize ?>"><img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39093/preview.png' alt='vor'></a>
         <?php } ?>
     </div>

@@ -1,19 +1,5 @@
 <?php
-
-    function getDatabaseConnection()
-    {
-        $servername = getConfigParameter("servername");
-        $username = getConfigParameter("username");
-        $password = getConfigParameter("password");
-        $dbname = getConfigParameter("dbname");
-        $conn = mysqli_connect($servername, $username, $password, $dbname);
-
-        if (!$conn) {
-            die("Connection failed: " . mysqli_connect_error());
-        }
-
-        return $conn;
-    }
+include "classes/Configuration.php";
 
     function getRequestParameter($key, $default = false)
     {
@@ -21,13 +7,6 @@
             return $_REQUEST[$key];
         }
         return $default;
-    }
-
-    function getAzubiSkillsByType($connection, $azubiId, $type)
-    {
-        $query = "SELECT skill FROM azubi_skills WHERE azubi_id =". $azubiId ." AND type = '$type'";
-        $result = mysqli_query($connection, $query);
-        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 
     function addUserToAzubiDatabase($name, $birthday, $email, $github, $employmentstart, $pictureurl, $password, $conn)
@@ -117,16 +96,6 @@
         return true;
     }
 
-    function loadUser($inputId, $conn)
-    {
-        $sql = "SELECT * FROM azubi WHERE id =" . $inputId;
-        $result = executeMysqlQuery($conn, $sql);
-        if ($answer = mysqli_fetch_assoc($result)) {
-            return $answer;
-        }
-        return array("name" => "", "birthday" => "", "email" => "", "githubuser" => "", "employmentstart" => "", "pictureurl" => "", "password" => "");
-    }
-
     function insertData($azubiData, $azubiPreSkills, $azubiNewSkills, $conn)
     {
         if (isDataComplete($azubiData, $azubiPreSkills, $azubiNewSkills)) {
@@ -170,27 +139,19 @@
         executeMysqlQuery($conn, $sql);
     }
 
-    function loadSkills($inputId, $type, $conn)
-    {
-        $sql = "SELECT skill FROM azubi_skills WHERE azubi_id = ".$inputId. " AND type ='" . $type."'";
-        $result = executeMysqlQuery($conn, $sql);
-        $answer = "";
-        while ($row = mysqli_fetch_row($result)) {
-            $answer .= implode($row) . ", ";
-        }
-        return rtrim($answer, ", ");
-    }
-
     function getAzubiData($filter, $listSize, $startpoint, $conn)
     {
         $filter = trim($filter);
-        $sql = "SELECT * FROM azubi";
+        $sql = "SELECT id FROM azubi";
         if ($filter != "") {
             $sql .= " WHERE name OR email LIKE '%".$filter."%'";
         }
         $sql .= " LIMIT ".$listSize." OFFSET ".$startpoint;
         $result = executeMysqlQuery($conn, $sql);
-        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        while($row = mysqli_fetch_row($result)){
+            $azubis[] = new Azubi($row[0]);
+        }
+        return $azubis;
     }
 
     function getAllIds($conn)
@@ -224,22 +185,10 @@
 
     function encrypt($password)
     {
-        return md5($password.getConfigParameter("salt"));
+        return md5($password.Configuration::getParameter("salt"));
     }
 
     function getUrl($data)
     {
-        return getConfigParameter("path").$data;
-    }
-
-    function getConfigParameter($name)
-    {
-        if (file_exists("config.php")){
-            include "config.php";
-            if (isset($data[$name])) {
-                return $data[$name];
-            }
-            return false;
-        }
-        die("Config Data is missing.");
+        return Configuration::getParameter("path").$data;
     }
