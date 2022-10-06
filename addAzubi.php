@@ -1,16 +1,18 @@
 <?php
-    $title = "Azubi hinzufügen";
     include "functions.php";
-    include "header.php";
     include "loginCheck.php";
     include "classes/Azubi.php";
 
     $id = getRequestParameter("azubiId");
     if(!$id){
         $azubi = new Azubi();
+        $title = "Azubi hinzufügen";
     } else {
         $azubi = new Azubi($id);
+        $title = "Azubi bearbeiten";
     }
+
+    include "header.php";
 
     if(getRequestParameter("deleteId") !== false){
         $azubi->delete(getRequestParameter("deleteId"));

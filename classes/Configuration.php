@@ -8,10 +8,7 @@ class Configuration
     {
         if (file_exists("config.php")){
             if(self::$data == null){
-                include __DIR__."/../config.php";
-                if(isset($data)){
-                    self::$data = $data;
-                }
+                self::loadData();
             }
             if (isset(self::$data[$name])) {
                 return self::$data[$name];
@@ -19,5 +16,12 @@ class Configuration
             return false;
         }
         die("Config Data is missing.");
+    }
+
+    protected static function loadData(){
+        include __DIR__."/../config.php";
+        if(isset($data)){
+            self::$data = $data;
+        }
     }
 }

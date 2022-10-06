@@ -99,16 +99,29 @@ class Azubi
 
     protected function insertSkills($skills, $type)
     {
-        $sql = "DELETE FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id;
-        DatabaseConnection::executeMysqlQuery($sql);
-
-        foreach ($skills as $skill) {
+        foreach ($skills as $skill){
+            if($this->isDuplicate($skill, $type) === false && $skill != ""){
                 $sql = "INSERT INTO azubi_skills (azubi_id, type, skill) VALUES (".$this->id.", '".$type."', '$skill')";
                 DatabaseConnection::executeMysqlQuery($sql);
+            }
         }
+
     }
 
-    static function encrypt($password)
+    protected function isDuplicate($skill, $type)
+    {
+        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id;
+        $result = DatabaseConnection::executeMysqlQuery($sql);
+
+        while($row = mysqli_fetch_row($result)){
+            if(strtolower(trim($row[0])) == strtolower(trim($skill))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function encrypt($password)
     {
         return md5($password.Configuration::getConfigParameter("salt"));
     }
