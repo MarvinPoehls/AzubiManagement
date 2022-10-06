@@ -28,7 +28,7 @@ class Azubi
         $this->id = $id;
 
         $sql = "SELECT * FROM azubi WHERE id = ".$id;
-        $result = executeMysqlQuery(DatabaseConnection::getConnection(), $sql);
+        $result = DatabaseConnection::executeMysqlQuery($sql);
         $data = mysqli_fetch_assoc($result);
 
         $this->name = $data["name"];
@@ -40,13 +40,13 @@ class Azubi
         $this->password = $data["password"];
 
         $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= ".$id." AND type = 'pre'";
-        $result = executeMysqlQuery(DatabaseConnection::getConnection(), $sql);
+        $result = DatabaseConnection::executeMysqlQuery($sql);
         while ($row = mysqli_fetch_row($result)) {
             $this->preSkills[] = $row[0];
         }
 
         $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= ".$id." AND type = 'new'";
-        $result = executeMysqlQuery(DatabaseConnection::getConnection(), $sql);
+        $result = DatabaseConnection::executeMysqlQuery($sql);
         while ($row = mysqli_fetch_row($result)) {
             $this->newSkills[] = $row[0];
         }
@@ -61,13 +61,24 @@ class Azubi
         }
     }
 
+    public function delete($id = false)
+    {
+        if($id === false){
+            $id = $this->id;
+        }
+        $sqlAzubi = "DELETE FROM azubi WHERE id =".$id;
+        $sqlSkills = "DELETE FROM azubi_skills WHERE azubi_id =".$id;
+
+        DatabaseConnection::executeMysqlQuery($sqlAzubi);
+        DatabaseConnection::executeMysqlQuery($sqlSkills);
+    }
+
     protected function updateAzubi()
     {
         $sql = "UPDATE azubi  SET name='".$this->name."',birthday='".$this->birthday."',email='".$this->email."',
-                    githubuser='".$this->githubuser."',employmentstart='".$this->employmentstart."',pictureurl='".$this->pictureurl."',
-                    password='".encrypt($this->password)."' 
-                    WHERE id =".$this->id;
-        executeMysqlQuery(DatabaseConnection::getConnection(), $sql);
+                githubuser='".$this->githubuser."',employmentstart='".$this->employmentstart."',pictureurl='".$this->pictureurl."',
+                password='".self::encrypt($this->password)."' WHERE id =".$this->id;
+        DatabaseConnection::executeMysqlQuery($sql);
 
         $this->insertSkills($this->preSkills, "pre");
         $this->insertSkills($this->newSkills, "new");
@@ -75,42 +86,31 @@ class Azubi
 
     protected function createAzubi()
     {
-        $this->password = encrypt($this->password);
+        $this->password = self::encrypt($this->password);
 
         $sql = "INSERT INTO azubi (name, birthday, email, githubuser, employmentstart, pictureurl, password) 
-                VALUES ('$this->name', '$this->birthday', '$this->email', '$this->github', '$this->employmentstart', '$this->pictureurl', '$this->password')";
-
-        if (mysqli_query(DatabaseConnection::getConnection(), $sql)) {
-            echo "Neuer Eintrag erfolgreich erstellt.";
-        } else {
-            echo "Error: " . $sql . "<br>" . mysqli_error(DatabaseConnection::getConnection());
-        }
+                VALUES ('$this->name', '$this->birthday', '$this->email', '$this->githubuser', '$this->employmentstart', '$this->pictureurl', '$this->password')";
+        DatabaseConnection::executeMysqlQuery($sql);
         $this->id = mysqli_insert_id(DatabaseConnection::getConnection());
 
         $this->insertSkills($this->preSkills, "pre");
         $this->insertSkills($this->newSkills, "new");
-        mysqli_close(DatabaseConnection::getConnection());
     }
 
     protected function insertSkills($skills, $type)
     {
-        $sql = "SELECT skill FROM azubi_skills WHERE id=".$this->id;
-        $result = executeMysqlQuery(DatabaseConnection::getConnection(), $sql);
+        $sql = "DELETE FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id;
+        DatabaseConnection::executeMysqlQuery($sql);
 
         foreach ($skills as $skill) {
-            $isDuplicate = false;
-
-            while ($row = mysqli_fetch_row($result)) {
-                if ($row[0] == $skill) {
-                    $isDuplicate = true;
-                }
-            }
-
-            if (!$isDuplicate) {
                 $sql = "INSERT INTO azubi_skills (azubi_id, type, skill) VALUES (".$this->id.", '".$type."', '$skill')";
-                executeMysqlQuery(DatabaseConnection::getConnection(), $sql);
-            }
+                DatabaseConnection::executeMysqlQuery($sql);
         }
+    }
+
+    static function encrypt($password)
+    {
+        return md5($password.Configuration::getConfigParameter("salt"));
     }
 
     public function getId()
@@ -193,8 +193,11 @@ class Azubi
         $this->password = $password;
     }
 
-    public function getPreSkills()
+    public function getPreSkills($implode = false)
     {
+        if($implode){
+            return implode(",", $this->preSkills);
+        }
         return $this->preSkills;
     }
 
@@ -203,8 +206,11 @@ class Azubi
         $this->preSkills = $preSkills;
     }
 
-    public function getNewSkills()
+    public function getNewSkills($implode = false)
     {
+        if($implode){
+            return implode(",", $this->newSkills);
+        }
         return $this->newSkills;
     }
 

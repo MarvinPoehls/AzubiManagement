@@ -20,16 +20,16 @@ if (getRequestParameter("startpoint")) {
 }
 
 $listSize = getRequestParameter("listSize", 10);
-$azubis = getAzubiData($filter, $listSize, $startpoint, DatabaseConnection::getConnection());
+$azubis = DatabaseConnection::getAzubiData($filter, $listSize, $startpoint);
 
 if (getRequestParameter("deleteId") !== false) {
-    deleteData(getRequestParameter("deleteId"), DatabaseConnection::getConnection());
+    $azubis[getRequestParameter("deleteId")]->delete();
     header("Refresh:0; url=azubiList.php");
 }
 
 foreach ($azubis as $azubi){
     if (getRequestParameter($azubi->getId()) == "on") {
-        deleteData($azubi->getId(), $azubi->getConn);
+        $azubi->delete();
         header("Refresh:0; url=azubiList.php");
     }
 }
@@ -73,13 +73,13 @@ foreach ($azubis as $azubi){
             <a href="<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint - $listSize ?>&listSize=<?php echo $listSize ?>"><img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39092/preview.png' alt='vor'></a>
         <?php } ?>
         <?php
-        for($i = 0; $i < count(getAllIds(DatabaseConnection::getConnection()))/$listSize; $i++){
+        for($i = 0; $i < count(DatabaseConnection::getAllIds())/$listSize; $i++){
             $start = $i * $listSize;
             $value = $i+1;
             ?>
             <a href='<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $start ?>&listSize=<?php echo $listSize ?>'><input class='paginationButton' name='startingpoint' type='button' value='<?php echo $value ?>'></a>
         <?php } ?>
-        <?php if ($startpoint < count(getAllIds(DatabaseConnection::getConnection()))-$listSize) { ?>
+        <?php if ($startpoint < count(DatabaseConnection::getAllIds())-$listSize) { ?>
             <a href="<?php echo getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint + $listSize ?>&listSize=<?php echo $listSize ?>"><img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39093/preview.png' alt='vor'></a>
         <?php } ?>
     </div>

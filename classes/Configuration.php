@@ -2,12 +2,19 @@
 
 class Configuration
 {
-    static function getParameter($name)
+    protected static $data = null;
+
+    public static function getConfigParameter($name)
     {
         if (file_exists("config.php")){
-            include "C:/xampp/xampp/htdocs/azubiManagement/config.php";
-            if (isset($data[$name])) {
-                return $data[$name];
+            if(self::$data == null){
+                include __DIR__."/../config.php";
+                if(isset($data)){
+                    self::$data = $data;
+                }
+            }
+            if (isset(self::$data[$name])) {
+                return self::$data[$name];
             }
             return false;
         }

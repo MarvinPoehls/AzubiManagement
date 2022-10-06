@@ -3,7 +3,7 @@
 $title = "Login";
 include "functions.php";
 include "header.php";
-include "classes/DatabaseConnection.php";
+include "classes/Azubi.php";
 
 $email = getRequestParameter("email");
 $password = getRequestParameter("password");
@@ -12,13 +12,13 @@ $isDataWrong = false;
 session_start();
 
 if ($email !== false && $password !== false) {
-    if (isValid($email, "email", DatabaseConnection::getConnection())) {
+    if (DatabaseConnection::isEntryValid($email, "email")) {
         $sql = "SELECT password FROM azubi WHERE email = '".$email."'";
-        $result = executeMysqlQuery(DatabaseConnection::getConnection(), $sql);
+        $result = DatabaseConnection::executeMysqlQuery($sql);
         $row = mysqli_fetch_row($result);
         $userPassword = $row[0];
 
-        if (encrypt($password) == $userPassword) {
+        if (Azubi::encrypt($password) == $userPassword) {
             $_SESSION["lastLogin"] = time();
             $lastSite = $_SESSION["lastSite"];
             redirect($lastSite);

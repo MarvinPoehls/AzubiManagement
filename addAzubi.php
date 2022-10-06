@@ -4,6 +4,7 @@
     include "header.php";
     include "loginCheck.php";
     include "classes/Azubi.php";
+
     $id = getRequestParameter("azubiId");
     if(!$id){
         $azubi = new Azubi();
@@ -12,23 +13,18 @@
     }
 
     if(getRequestParameter("deleteId") !== false){
-        deleteData(getRequestParameter("deleteId"), DatabaseConnection::getConnection());
+        $azubi->delete(getRequestParameter("deleteId"));
     } elseif (getRequestParameter("name")) {
-        $azubiData = ["name" => getRequestParameter("name"),
-            "birthday" => getRequestParameter("birthday"),
-            "email" => getRequestParameter("email"),
-            "githubuser" => getRequestParameter("githubuser"),
-            "employmentstart" => getRequestParameter("employmentstart"),
-            "pictureurl" => getRequestParameter("pictureurl"),
-            "password" => encrypt(getRequestParameter("password"))];
-        $azubiPreSkills = explode(",", getRequestParameter("pre"));
-        $azubiNewSkills = explode(",", getRequestParameter("new"));
-
-        if (!empty($id)) {
-            updateData($id, $azubiData, $azubiPreSkills, $azubiNewSkills, DatabaseConnection::getConnection());
-        } else {
-            insertData($azubiData,$azubiPreSkills, $azubiNewSkills, DatabaseConnection::getConnection());
-        }
+        $azubi->setName(getRequestParameter("name"));
+        $azubi->setBirthday(getRequestParameter("birthday"));
+        $azubi->setEmail(getRequestParameter("email"));
+        $azubi->setGithubuser(getRequestParameter("githubuser"));
+        $azubi->setEmploymentstart(getRequestParameter("employmentstart"));
+        $azubi->setPictureurl(getRequestParameter("pictureurl"));
+        $azubi->setPreSkills(explode(",", getRequestParameter("pre")));
+        $azubi->setNewSkills(explode(",", getRequestParameter("new")));
+        $azubi->setPassword(getRequestParameter("password"));
+        $azubi->save();
     }
 ?>
 
@@ -65,11 +61,11 @@
     <div class="skillDiv">
         <div class="inputData">
             <label for="pre"> Pre Skills: </label>
-            <p><input id="pre" name="pre" type="text" value="<?php echo $azubi->getPreSkills() ?>"></p>
+            <p><input id="pre" name="pre" type="text" value="<?php echo $azubi->getPreSkills(true) ?>"></p>
         </div>
         <div class="inputData">
             <label for="new">Neue Skills: </label>
-            <p><input id="new" name="new" type="text" value="<?php echo $azubi->getNewSkills() ?>"></p>
+            <p><input id="new" name="new" type="text" value="<?php echo $azubi->getNewSkills(true) ?>"></p>
         </div>
     </div>
     <div class="passwordDiv">
