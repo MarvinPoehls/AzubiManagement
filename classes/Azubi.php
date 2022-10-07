@@ -39,7 +39,7 @@ class Azubi
             $this->pictureurl = $data["pictureurl"];
             $this->password = $data["password"];
         } else {
-            echo "Azubi with the ID: ".$id." doesn't exists!";
+            return false;
         }
 
         $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= ".$id." AND type = 'pre'";
@@ -109,17 +109,13 @@ class Azubi
             }
         }
 
-        for ($i = 0; $i < count($skills); $i++) {
-            $skills[$i] = "'".$skills[$i]."'";
-        }
-
-        $sql = "DELETE FROM azubi_skills WHERE azubi_id = ".$this->id." AND type ='".$type."' AND skill NOT IN(".implode(",",$skills).");";
+        $sql = "DELETE FROM azubi_skills WHERE azubi_id = ".$this->id." AND type ='".$type."' AND skill NOT IN('".implode("','",$skills)."');";
         DatabaseConnection::executeMysqlQuery($sql);
     }
 
     protected function isDuplicate($skill, $type)
     {
-        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id." AND skill IN ('".$skill."')";
+        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id." AND skill='".$skill."'";
         $result = DatabaseConnection::executeMysqlQuery($sql);
         $row = mysqli_fetch_row($result);
         if(isset($row[0])){
