@@ -7,7 +7,7 @@
 
     $sqlPath = "SELECT id FROM azubi";
     $result = mysqli_query(DatabaseConnection::getConnection(), $sqlPath);
-    while($row = mysqli_fetch_row($result)){
+    while ($row = mysqli_fetch_row($result)) {
         $azubiIds[] = $row[0];
     }
     $azubiList = [];

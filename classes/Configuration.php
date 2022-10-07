@@ -7,7 +7,7 @@ class Configuration
     public static function getConfigParameter($name)
     {
         if (file_exists("config.php")){
-            if(self::$data == null){
+            if (self::$data == null) {
                 self::loadData();
             }
             if (isset(self::$data[$name])) {
@@ -20,7 +20,7 @@ class Configuration
 
     protected static function loadData(){
         include __DIR__."/../config.php";
-        if(isset($data)){
+        if (isset($data)) {
             self::$data = $data;
         }
     }

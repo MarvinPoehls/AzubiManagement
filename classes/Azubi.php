@@ -30,14 +30,17 @@ class Azubi
         $sql = "SELECT * FROM azubi WHERE id = ".$id;
         $result = DatabaseConnection::executeMysqlQuery($sql);
         $data = mysqli_fetch_assoc($result);
-
-        $this->name = $data["name"];
-        $this->birthday = $data["birthday"];
-        $this->email = $data["email"];
-        $this->githubuser = $data["githubuser"];
-        $this->employmentstart = $data["employmentstart"];
-        $this->pictureurl = $data["pictureurl"];
-        $this->password = $data["password"];
+        if($data){
+            $this->name = $data["name"];
+            $this->birthday = $data["birthday"];
+            $this->email = $data["email"];
+            $this->githubuser = $data["githubuser"];
+            $this->employmentstart = $data["employmentstart"];
+            $this->pictureurl = $data["pictureurl"];
+            $this->password = $data["password"];
+        } else {
+            echo "Azubi with the ID: ".$id." doesn't exists!";
+        }
 
         $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= ".$id." AND type = 'pre'";
         $result = DatabaseConnection::executeMysqlQuery($sql);
@@ -99,44 +102,28 @@ class Azubi
 
     protected function insertSkills($skills, $type)
     {
-        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id;
-        $result = DatabaseConnection::executeMysqlQuery($sql);
-
-        $oldSkills = [];
-        while ($row = mysqli_fetch_row($result)) {
-            $oldSkills[] = $row[0];
-        }
-
-        foreach ($oldSkills as $oldSkill) {
-            $duplicate = false;
-            foreach ($skills as $skill){
-                if(strtolower(trim($oldSkill)) == strtolower(trim($skill))){
-                    $duplicate = true;
-                }
-            }
-            if(!$duplicate){
-                $sql = "DELETE FROM azubi_skills WHERE skill ='".$oldSkill."' AND azubi_id =".$this->id;
-                DatabaseConnection::executeMysqlQuery($sql);
-            }
-        }
-
-        foreach ($skills as $skill){
-            if($this->isDuplicate($skill, $type) === false && $skill != ""){
+        foreach ($skills as $skill) {
+            if ($this->isDuplicate($skill, $type) === false && $skill != "") {
                 $sql = "INSERT INTO azubi_skills (azubi_id, type, skill) VALUES (".$this->id.", '".$type."', '$skill')";
                 DatabaseConnection::executeMysqlQuery($sql);
             }
         }
+
+        for ($i = 0; $i < count($skills); $i++) {
+            $skills[$i] = "'".$skills[$i]."'";
+        }
+
+        $sql = "DELETE FROM azubi_skills WHERE azubi_id = ".$this->id." AND type ='".$type."' AND skill NOT IN(".implode(",",$skills).");";
+        DatabaseConnection::executeMysqlQuery($sql);
     }
 
     protected function isDuplicate($skill, $type)
     {
-        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id;
+        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id." AND skill IN ('".$skill."')";
         $result = DatabaseConnection::executeMysqlQuery($sql);
-
-        while($row = mysqli_fetch_row($result)){
-            if(strtolower(trim($row[0])) == strtolower(trim($skill))){
-                return true;
-            }
+        $row = mysqli_fetch_row($result);
+        if(isset($row[0])){
+            return true;
         }
         return false;
     }

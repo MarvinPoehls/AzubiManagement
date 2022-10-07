@@ -4,7 +4,7 @@
     include "classes/Azubi.php";
 
     $id = getRequestParameter("azubiId");
-    if(!$id){
+    if (!$id) {
         $azubi = new Azubi();
         $title = "Azubi hinzufügen";
     } else {
@@ -14,7 +14,7 @@
 
     include "header.php";
 
-    if(getRequestParameter("deleteId") !== false){
+    if (getRequestParameter("deleteId") !== false) {
         $azubi->delete(getRequestParameter("deleteId"));
     } elseif (getRequestParameter("name")) {
         $azubi->setName(getRequestParameter("name"));

@@ -6,7 +6,7 @@ class DatabaseConnection
 
     public static function getConnection()
     {
-        if(self::$connection == null){
+        if (self::$connection == null) {
             $servername = Configuration::getConfigParameter("servername");
             $username = Configuration::getConfigParameter("username");
             $password = Configuration::getConfigParameter("password");
@@ -62,7 +62,7 @@ class DatabaseConnection
         }
         $sql .= " LIMIT ".$listSize." OFFSET ".$startpoint;
         $result = DatabaseConnection::executeMysqlQuery($sql);
-        while($row = mysqli_fetch_row($result)){
+        while ($row = mysqli_fetch_row($result)) {
             $azubis[$row[0]] = new Azubi($row[0]);
         }
         return $azubis;

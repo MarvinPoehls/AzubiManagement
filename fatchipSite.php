@@ -21,7 +21,7 @@ function getPictureUrl($url){
 function atFatchipSince($startDay, $startMonth, $startYear)
 {
     $day = date("d") - $startDay;
-    if($day < 0){
+    if ($day < 0) {
         $day = 30 - $day;
     }
     $month = date("m");
@@ -31,7 +31,7 @@ function atFatchipSince($startDay, $startMonth, $startYear)
         $month = date("m") - $startMonth;
     }
     $year = date("Y") - $startYear;
-    if($month > $startMonth && $year != 0){
+    if ($month > $startMonth && $year != 0) {
         $year-=1;
     }
 
@@ -69,14 +69,14 @@ function atFatchipSince($startDay, $startMonth, $startYear)
                     <?php
                         if (!empty($azubi->getPreSkills())) {
                             echo "<p>Vorkenntnisse in Programmierung:</p>";
-                            foreach ($azubi->getPreSkills() as $skill){
+                            foreach ($azubi->getPreSkills() as $skill) {
                                 echo "<li>". $skill ."</li>";
                             }
                         }
                     ?>
                 </ol>
                 <?php
-                    if(!empty($azubi->getPreSkills()) && !empty($azubi->getNewSkills())){
+                    if (!empty($azubi->getPreSkills()) && !empty($azubi->getNewSkills())) {
                         echo "<hr>";
                     }
                 ?>
@@ -91,7 +91,7 @@ function atFatchipSince($startDay, $startMonth, $startYear)
                     ?>
                 </ul>
                 <?php
-                if(!empty($azubi->getPreSkills()) && empty($azubi->getNewSkills())){
+                if (!empty($azubi->getPreSkills()) && empty($azubi->getNewSkills())) {
                     echo "<hr class='strongHr'>";
                 }
                 ?>
