@@ -13,7 +13,7 @@ session_start();
 
 if ($email !== false && $password !== false) {
     if (DatabaseConnection::isEntryValid($email, "email")) {
-        $sql = "SELECT password FROM azubi WHERE email = '".$email."'";
+        $sql = "SELECT password FROM azubi WHERE email = '" . $email . "'";
         $result = DatabaseConnection::executeMysqlQuery($sql);
         $row = mysqli_fetch_row($result);
         $userPassword = $row[0];
@@ -31,7 +31,8 @@ if ($email !== false && $password !== false) {
 }
 
 ?>
-<form class="loginForm" action="<?php echo getUrl("login.php") ?>" method="post">
+<form class="loginForm" action="<?php
+echo getUrl("login.php") ?>" method="post">
     <h2>In Azubi Seite einloggen</h2>
     <div class="loginInput">
         <label for="user"> Email: </label>
@@ -39,10 +40,13 @@ if ($email !== false && $password !== false) {
         <label for="password"> Passwort: </label>
         <p><input id="password" name="password" type="text" value=""></p>
     </div>
-    <?php if ($isDataWrong) { ?>
-        <p class="errorMessage" >Email oder Passwort inkorrekt!</p>
-    <?php } ?>
+    <?php
+    if ($isDataWrong) { ?>
+        <p class="errorMessage">Email oder Passwort inkorrekt!</p>
+    <?php
+    } ?>
     <input class="submitLogin" type="submit" value="Weiter">
 </form>
 
-<?php include "footer.php" ?>
+<?php
+include "footer.php" ?>

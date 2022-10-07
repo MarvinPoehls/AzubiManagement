@@ -5,18 +5,18 @@ include "DatabaseConnection.php";
 class Azubi
 {
 
-    protected $id ="";
-    protected $name ="";
-    protected $birthday ="";
-    protected $email ="";
-    protected $githubuser ="";
-    protected $employmentstart ="";
-    protected $pictureurl ="";
-    protected $password ="";
+    protected $id = "";
+    protected $name = "";
+    protected $birthday = "";
+    protected $email = "";
+    protected $githubuser = "";
+    protected $employmentstart = "";
+    protected $pictureurl = "";
+    protected $password = "";
     protected $preSkills = [];
     protected $newSkills = [];
 
-    public function __construct ($id = false)
+    public function __construct($id = false)
     {
         if ($id !== false) {
             $this->load($id);
@@ -27,28 +27,28 @@ class Azubi
     {
         $this->id = $id;
 
-        $sql = "SELECT * FROM azubi WHERE id = ".$id;
+        $sql = "SELECT * FROM azubi WHERE id = " . $id;
         $result = DatabaseConnection::executeMysqlQuery($sql);
-        $data = mysqli_fetch_assoc($result);
-        if($data){
-            $this->name = $data["name"];
-            $this->birthday = $data["birthday"];
-            $this->email = $data["email"];
-            $this->githubuser = $data["githubuser"];
-            $this->employmentstart = $data["employmentstart"];
-            $this->pictureurl = $data["pictureurl"];
-            $this->password = $data["password"];
-        } else {
+        if (mysqli_num_rows($result) == 0) {
             return false;
         }
 
-        $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= ".$id." AND type = 'pre'";
+        $data = mysqli_fetch_assoc($result);
+        $this->name = $data["name"];
+        $this->birthday = $data["birthday"];
+        $this->email = $data["email"];
+        $this->githubuser = $data["githubuser"];
+        $this->employmentstart = $data["employmentstart"];
+        $this->pictureurl = $data["pictureurl"];
+        $this->password = $data["password"];
+
+        $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= " . $id . " AND type = 'pre'";
         $result = DatabaseConnection::executeMysqlQuery($sql);
         while ($row = mysqli_fetch_row($result)) {
             $this->preSkills[] = $row[0];
         }
 
-        $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= ".$id." AND type = 'new'";
+        $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= " . $id . " AND type = 'new'";
         $result = DatabaseConnection::executeMysqlQuery($sql);
         while ($row = mysqli_fetch_row($result)) {
             $this->newSkills[] = $row[0];
@@ -64,13 +64,13 @@ class Azubi
         }
     }
 
-    public function delete ($id = false)
+    public function delete($id = false)
     {
         if ($id === false) {
             $id = $this->id;
         }
-        $sqlAzubi = "DELETE FROM azubi WHERE id =".$id;
-        $sqlSkills = "DELETE FROM azubi_skills WHERE azubi_id =".$id;
+        $sqlAzubi = "DELETE FROM azubi WHERE id =" . $id;
+        $sqlSkills = "DELETE FROM azubi_skills WHERE azubi_id =" . $id;
 
         DatabaseConnection::executeMysqlQuery($sqlAzubi);
         DatabaseConnection::executeMysqlQuery($sqlSkills);
@@ -78,9 +78,9 @@ class Azubi
 
     protected function updateAzubi()
     {
-        $sql = "UPDATE azubi  SET name='".$this->name."',birthday='".$this->birthday."',email='".$this->email."',
-                githubuser='".$this->githubuser."',employmentstart='".$this->employmentstart."',pictureurl='".$this->pictureurl."',
-                password='".self::encrypt($this->password)."' WHERE id =".$this->id;
+        $sql = "UPDATE azubi  SET name='" . $this->name . "',birthday='" . $this->birthday . "',email='" . $this->email . "',
+                githubuser='" . $this->githubuser . "',employmentstart='" . $this->employmentstart . "',pictureurl='" . $this->pictureurl . "',
+                password='" . self::encrypt($this->password) . "' WHERE id =" . $this->id;
         DatabaseConnection::executeMysqlQuery($sql);
 
         $this->insertSkills($this->preSkills, "pre");
@@ -104,21 +104,24 @@ class Azubi
     {
         foreach ($skills as $skill) {
             if ($this->isDuplicate($skill, $type) === false && $skill != "") {
-                $sql = "INSERT INTO azubi_skills (azubi_id, type, skill) VALUES (".$this->id.", '".$type."', '$skill')";
+                $sql = "INSERT INTO azubi_skills (azubi_id, type, skill) VALUES (" . $this->id . ", '" . $type . "', '$skill')";
                 DatabaseConnection::executeMysqlQuery($sql);
             }
         }
 
-        $sql = "DELETE FROM azubi_skills WHERE azubi_id = ".$this->id." AND type ='".$type."' AND skill NOT IN('".implode("','",$skills)."');";
+        $sql = "DELETE FROM azubi_skills WHERE azubi_id = " . $this->id . " AND type ='" . $type . "' AND skill NOT IN('" . implode(
+                "','",
+                $skills
+            ) . "');";
         DatabaseConnection::executeMysqlQuery($sql);
     }
 
     protected function isDuplicate($skill, $type)
     {
-        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id." AND skill='".$skill."'";
+        $sql = "SELECT skill FROM azubi_skills WHERE type='" . $type . "' AND azubi_id=" . $this->id . " AND skill='" . $skill . "'";
         $result = DatabaseConnection::executeMysqlQuery($sql);
         $row = mysqli_fetch_row($result);
-        if(isset($row[0])){
+        if (isset($row[0])) {
             return true;
         }
         return false;
@@ -126,7 +129,7 @@ class Azubi
 
     public static function encrypt($password)
     {
-        return md5($password.Configuration::getConfigParameter("salt"));
+        return md5($password . Configuration::getConfigParameter("salt"));
     }
 
     public function getId()
@@ -211,7 +214,7 @@ class Azubi
 
     public function getPreSkills($implode = false)
     {
-        if($implode){
+        if ($implode) {
             return implode(",", $this->preSkills);
         }
         return $this->preSkills;
@@ -224,7 +227,7 @@ class Azubi
 
     public function getNewSkills($implode = false)
     {
-        if($implode){
+        if ($implode) {
             return implode(",", $this->newSkills);
         }
         return $this->newSkills;
