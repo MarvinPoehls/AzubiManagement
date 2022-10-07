@@ -54,16 +54,16 @@ class Azubi
 
     public function save()
     {
-        if($this->id == ""){
+        if ($this->id == "") {
             $this->createAzubi();
         } else {
             $this->updateAzubi();
         }
     }
 
-    public function delete($id = false)
+    public function delete ($id = false)
     {
-        if($id === false){
+        if ($id === false) {
             $id = $this->id;
         }
         $sqlAzubi = "DELETE FROM azubi WHERE id =".$id;
@@ -99,13 +99,33 @@ class Azubi
 
     protected function insertSkills($skills, $type)
     {
+        $sql = "SELECT skill FROM azubi_skills WHERE type='".$type."' AND azubi_id=".$this->id;
+        $result = DatabaseConnection::executeMysqlQuery($sql);
+
+        $oldSkills = [];
+        while ($row = mysqli_fetch_row($result)) {
+            $oldSkills[] = $row[0];
+        }
+
+        foreach ($oldSkills as $oldSkill) {
+            $duplicate = false;
+            foreach ($skills as $skill){
+                if(strtolower(trim($oldSkill)) == strtolower(trim($skill))){
+                    $duplicate = true;
+                }
+            }
+            if(!$duplicate){
+                $sql = "DELETE FROM azubi_skills WHERE skill ='".$oldSkill."' AND azubi_id =".$this->id;
+                DatabaseConnection::executeMysqlQuery($sql);
+            }
+        }
+
         foreach ($skills as $skill){
             if($this->isDuplicate($skill, $type) === false && $skill != ""){
                 $sql = "INSERT INTO azubi_skills (azubi_id, type, skill) VALUES (".$this->id.", '".$type."', '$skill')";
                 DatabaseConnection::executeMysqlQuery($sql);
             }
         }
-
     }
 
     protected function isDuplicate($skill, $type)
