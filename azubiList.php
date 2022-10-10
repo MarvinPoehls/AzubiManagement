@@ -1,48 +1,21 @@
 <?php
-
-$title = "Azubi Liste";
 include "functions.php";
+$website = new AzubiList();
 include "header.php";
 include "loginCheck.php";
-include "classes/Azubi.php";
-
-
-if (getRequestParameter("filter")) {
-    $filter = getRequestParameter("filter");
-} else {
-    $filter = " ";
-}
-
-if (getRequestParameter("startpoint")) {
-    $startpoint = getRequestParameter("startpoint");
-} else {
-    $startpoint = 0;
-}
-
-$listSize = getRequestParameter("listSize", 10);
-$azubis = DatabaseConnection::getAzubiData($filter, $listSize, $startpoint);
-
-if (getRequestParameter("deleteId") !== false) {
-    $azubis[getRequestParameter("deleteId")]->delete();
-    header("Refresh:0; url=azubiList.php");
-}
-
-foreach ($azubis as $azubi) {
-    if (getRequestParameter($azubi->getId()) == "on") {
-        $azubi->delete();
-        header("Refresh:0; url=azubiList.php");
-    }
-}
-
+$azubis = $website->getAzubiData();
+$website->checkDelete($azubis);
+$startpoint = $website->getStartpoint();
+$listSize = $website->getRequestParameter("listSize", 10);
 ?>
 <form class="searchbar" action="<?php
-echo getUrl("azubiList.php") ?>" method="post">
+echo $website->getUrl("azubiList.php") ?>" method="post">
     <input class="searchButton" type="submit" value="">
     <input class="search" name="filter" type="search" placeholder="Search..">
 </form>
 <br>
 <form action="<?php
-echo getUrl("azubiList.php") ?>" method="post">
+echo $website->getUrl("azubiList.php") ?>" method="post">
     <table class="azubiTable">
         <tr>
             <td class="tableHeader"></td>
@@ -63,14 +36,12 @@ echo getUrl("azubiList.php") ?>" method="post">
                 <td class="tableData"><?php
                     echo $azubi->getEmail() ?></td>
                 <td class="tableButtons">
-                    <a href="<?php
-                    echo getUrl("addAzubi.php?azubiId=" . $azubi->getId()) ?>"><img class='editButton'
-                                                                                    src='https://cdn-icons-png.flaticon.com/512/84/84380.png'
-                                                                                    alt='edit'></a>
-                    <a href="<?php
-                    echo getUrl("azubiList.php?deleteId=" . $azubi->getId()) ?>"><img class='deleteButton'
-                                                                                      src='https://cdn-icons-png.flaticon.com/512/1345/1345874.png'
-                                                                                      alt='edit'></a>
+                    <a href="<?php echo $website->getUrl("addAzubi.php?azubiId=" . $azubi->getId()) ?>">
+                        <img class='editButton' src='https://cdn-icons-png.flaticon.com/512/84/84380.png' alt='edit'>
+                    </a>
+                    <a href="<?php echo $website->getUrl("azubiList.php?deleteId=" . $azubi->getId() . "&startpoint=".$website->getRequestParameter("startpoint")."&listSize=".$website->getRequestParameter("startpoint")) ?>">
+                        <img class='deleteButton' src='https://cdn-icons-png.flaticon.com/512/1345/1345874.png' alt='edit'>
+                    </a>
                 </td>
             </tr>
         <?php
@@ -79,45 +50,37 @@ echo getUrl("azubiList.php") ?>" method="post">
     <div class="clear"></div>
     <div>
         <input class="deleteUserButton" type="submit" value="Ausgewählte Azubis löschen">
-        <a href="<?php
-        echo getUrl("addAzubi.php") ?>"><input class="newUserButton" type="button" value="Neuen Azubi anlegen"></a>
+        <a href="<?php echo $website->getUrl("addAzubi.php") ?>"><input class="newUserButton" type="button" value="Neuen Azubi anlegen"></a>
     </div>
     <div class="clear"></div>
     <div class="pagination">
         <?php
         if ($startpoint != 0) { ?>
-            <a href="<?php
-            echo getUrl("azubiList.php") ?>.?startpoint=<?php
-            echo $startpoint - $listSize ?>&listSize=<?php
-            echo $listSize ?>"><img class="paginationArrow"
-                                    src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39092/preview.png' alt='vor'></a>
+            <a href="<?php echo $website->getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint - $listSize ?>&listSize=<?php echo $listSize ?>">
+                <img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39092/preview.png' alt='vor'>
+            </a>
         <?php
         } ?>
         <?php
-        for ($i = 0; $i < count(DatabaseConnection::getAllIds()) / $listSize; $i++) {
+        for ($i = 0; $i < count($website->getAllIds()) / $listSize; $i++) {
             $start = $i * $listSize;
             $value = $i + 1;
             ?>
-            <a href='<?php
-            echo getUrl("azubiList.php") ?>.?startpoint=<?php
-            echo $start ?>&listSize=<?php
-            echo $listSize ?>'><input class='paginationButton' name='startingpoint' type='button' value='<?php
-                echo $value ?>'></a>
+            <a href='<?php echo $website->getUrl("azubiList.php") ?>.?startpoint=<?php echo $start ?>&listSize=<?php echo $listSize ?>'>
+                <input class='paginationButton' name='startingpoint' type='button' value='<?php echo $value ?>'>
+            </a>
         <?php
         } ?>
         <?php
-        if ($startpoint < count(DatabaseConnection::getAllIds()) - $listSize) { ?>
-            <a href="<?php
-            echo getUrl("azubiList.php") ?>.?startpoint=<?php
-            echo $startpoint + $listSize ?>&listSize=<?php
-            echo $listSize ?>"><img class="paginationArrow"
-                                    src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39093/preview.png' alt='vor'></a>
+        if ($startpoint < count($website->getAllIds()) - $listSize) { ?>
+            <a href="<?php echo $website->getUrl("azubiList.php") ?>.?startpoint=<?php echo $startpoint + $listSize ?>&listSize=<?php echo $listSize ?>">
+                <img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39093/preview.png' alt='vor'>
+            </a>
         <?php
         } ?>
     </div>
 </form>
-<form action="<?php
-echo getUrl("azubiList.php") ?>" method="post">
+<form action="<?php echo $website->getUrl("azubiList.php") ?>" method="post">
     <div class="listSizeMenu">
         <select name="listSize">
             <option value="5">5</option>

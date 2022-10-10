@@ -1,24 +1,14 @@
 <?php
-
 include "functions.php";
+$website = new AzubiTeam();
 include "header.php";
 include "loginCheck.php";
-include "classes/Azubi.php";
-$title = "Azubi Team";
+$azubiList = $website->getAzubiList();
 
-$sqlPath = "SELECT id FROM azubi";
-$result = mysqli_query(DatabaseConnection::getConnection(), $sqlPath);
-while ($row = mysqli_fetch_row($result)) {
-    $azubiIds[] = $row[0];
-}
-$azubiList = [];
-foreach ($azubiIds as $id) {
-    $azubiList[] = new Azubi($id);
-}
 foreach ($azubiList as $azubi) {
     ?>
     <a class="profilLink" href="<?php
-    echo getUrl("fatchipSite.php") ?>.?id=<?php
+    echo $website->getUrl("fatchipSite.php") ?>.?id=<?php
     echo $azubi->getId() ?>">
         <div class="profil">
             <img class="coworkerFoto" src="<?php

@@ -1,54 +1,13 @@
 <?php
-
 include "functions.php";
+$website = new AzubiSite();
 include "header.php";
 include "loginCheck.php";
-include "classes/Azubi.php";
-
-$id = getRequestParameter("id", 2);
-$azubi = new Azubi($id);
-
-$title = $azubi->getName();
-$headline = "Azubi";
-
-function getPictureUrl($url)
-{
-    if (empty($url)) {
-        return "https://secure.gravatar.com/avatar/cb665e6a65789619c27932fc7b51f8dc?default=mm&size=200&rating=G";
-    }
-    return $url;
-}
-
-function atFatchipSince($startDay, $startMonth, $startYear)
-{
-    $day = date("d") - $startDay;
-    if ($day < 0) {
-        $day = 30 - $day;
-    }
-    $month = date("m");
-    if ($month < $startMonth) {
-        $month = date("m") + (12 - $startMonth);
-    } else {
-        $month = date("m") - $startMonth;
-    }
-    $year = date("Y") - $startYear;
-    if ($month > $startMonth && $year != 0) {
-        $year -= 1;
-    }
-
-    if ($year == 0 && $month == 0) {
-        return "Bei Fatchip angestellt seit " . $day . " Tagen.";
-    }
-    if ($year == 0) {
-        return "Bei Fatchip angestellt seit " . $day . " Tagen und " . $month . " Monaten.";
-    }
-    return "Bei Fatchip angestellt seit " . $day . " Tagen, " . $month . " Monaten und " . $year . " Jahren.";
-}
-
+$azubi = $website->getAzubi();
 ?>
     <div class="foto">
         <img src="<?php
-        echo getPictureUrl($azubi->getPictureurl()) ?>" alt="Mitarbeiter Foto">
+        echo $website->getPictureUrl($azubi->getPictureurl()) ?>" alt="Mitarbeiter Foto">
     </div>
     <div class=info>
         <h1><?php
@@ -70,7 +29,7 @@ function atFatchipSince($startDay, $startMonth, $startYear)
                 echo $azubi->getGithubuser(); ?></a>
         </p>
         <p> <?php
-            echo atFatchipSince(1, 9, 2022); ?> </p>
+            echo $website->atFatchipSince(1, 9, 2022); ?> </p>
     </div>
     <div class="clear"></div>
     <div class="knowledge">

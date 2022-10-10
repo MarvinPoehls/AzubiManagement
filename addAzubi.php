@@ -1,36 +1,12 @@
 <?php
     include "functions.php";
-    include "loginCheck.php";
-    include "classes/Azubi.php";
-
-    $id = getRequestParameter("azubiId");
-    if (!$id) {
-        $azubi = new Azubi();
-        $title = "Azubi hinzufügen";
-    } else {
-        $azubi = new Azubi($id);
-        $title = "Azubi bearbeiten";
-    }
-
+    $website = new AddAzubi();
     include "header.php";
-
-    if (getRequestParameter("deleteId") !== false) {
-        $azubi->delete(getRequestParameter("deleteId"));
-    } elseif (getRequestParameter("name")) {
-        $azubi->setName(getRequestParameter("name"));
-        $azubi->setBirthday(getRequestParameter("birthday"));
-        $azubi->setEmail(getRequestParameter("email"));
-        $azubi->setGithubuser(getRequestParameter("githubuser"));
-        $azubi->setEmploymentstart(getRequestParameter("employmentstart"));
-        $azubi->setPictureurl(getRequestParameter("pictureurl"));
-        $azubi->setPreSkills(explode(",", getRequestParameter("pre")));
-        $azubi->setNewSkills(explode(",", getRequestParameter("new")));
-        $azubi->setPassword(getRequestParameter("password"));
-        $azubi->save();
-    }
+    include "loginCheck.php";
+    $azubi = $website->handleFormData();
 ?>
 
-<form action="<?php echo getUrl("addAzubi.php") ?>" method="post">
+<form action="<?php echo $website->getUrl("addAzubi.php") ?>" method="post">
     <input type="hidden" name="azubiId" value="<?php echo $azubi->getId() ?>">
     <div class="dataDiv">
         <div class="inputData">
@@ -82,7 +58,7 @@
     </div>
 </form>
 <div class="clear"></div>
-<form class="delete" action="<?php echo getUrl("addAzubi.php") ?>" method="post">
+<form class="delete" action="<?php echo $website->getUrl("addAzubi.php") ?>" method="post">
     <p><input class="submit" type="submit" value="Löschen"></p>
     <input type="hidden" name="deleteId" value = "<?php echo $azubi->getId() ?>">
 </form>

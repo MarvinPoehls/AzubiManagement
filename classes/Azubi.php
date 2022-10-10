@@ -1,10 +1,7 @@
 <?php
 
-include "DatabaseConnection.php";
-
 class Azubi
 {
-
     protected $id = "";
     protected $name = "";
     protected $birthday = "";
@@ -18,7 +15,7 @@ class Azubi
 
     public function __construct($id = false)
     {
-        if ($id !== false) {
+        if ($id) {
             $this->load($id);
         }
     }
@@ -26,7 +23,6 @@ class Azubi
     protected function load($id)
     {
         $this->id = $id;
-
         $sql = "SELECT * FROM azubi WHERE id = " . $id;
         $result = DatabaseConnection::executeMysqlQuery($sql);
         if (mysqli_num_rows($result) == 0) {
@@ -57,7 +53,7 @@ class Azubi
 
     public function save()
     {
-        if ($this->id == "") {
+        if ($this->id == false) {
             $this->createAzubi();
         } else {
             $this->updateAzubi();

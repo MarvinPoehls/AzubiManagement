@@ -41,30 +41,4 @@ class DatabaseConnection
         }
         return $result;
     }
-
-    public static function getAllIds()
-    {
-        $sql = "SELECT id FROM azubi";
-        $result = self::executeMysqlQuery($sql);
-        $array= [];
-        while ($row = mysqli_fetch_row($result)) {
-            $array[] = $row[0];
-        }
-        return $array;
-    }
-
-    public static function getAzubiData($filter, $listSize, $startpoint)
-    {
-        $filter = trim($filter);
-        $sql = "SELECT id FROM azubi";
-        if ($filter != "") {
-            $sql .= " WHERE name OR email LIKE '%".$filter."%'";
-        }
-        $sql .= " LIMIT ".$listSize." OFFSET ".$startpoint;
-        $result = DatabaseConnection::executeMysqlQuery($sql);
-        while ($row = mysqli_fetch_row($result)) {
-            $azubis[$row[0]] = new Azubi($row[0]);
-        }
-        return $azubis;
-    }
 }
