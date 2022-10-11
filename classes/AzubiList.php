@@ -1,6 +1,6 @@
 <?php
 
-class AzubiList extends Website
+class AzubiList extends SecureWebsite
 {
     protected $title = "Azubi Liste";
 

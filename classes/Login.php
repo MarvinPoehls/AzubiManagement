@@ -9,23 +9,25 @@ class Login extends Website
         session_start();
         $email = $this->getRequestParameter("email");
         $password = $this->getRequestParameter("password");
-        if ($email !== false && $password !== false) {
-            if (DatabaseConnection::isEntryValid($email, "email")) {
-                $sql = "SELECT password FROM azubi WHERE email = '" . $email . "'";
-                $result = DatabaseConnection::executeMysqlQuery($sql);
-                $row = mysqli_fetch_row($result);
-                $userPassword = $row[0];
-
-                if (Azubi::encrypt($password) == $userPassword) {
-                    $_SESSION["lastLogin"] = time();
-                    $lastSite = $_SESSION["lastSite"];
-                    $this->redirect($lastSite);
-                } else {
-                    return true;
-                }
-            } else {
+        if ($email != null && $password != null) {
+            if (!$this->isEntryValid($email, $password)) {
                 return true;
             }
+            $_SESSION["lastLogin"] = time();
+            $lastSite = $_SESSION["lastSite"];
+            $this->redirect($lastSite);
         }
+        return false;
+    }
+
+    protected function isEntryValid($email, $password)
+    {
+        $sql = "SELECT * FROM azubi WHERE email = '".$email."'";
+        $result = DatabaseConnection::executeMysqlQuery($sql);
+        $row = mysqli_fetch_assoc($result);
+        if ($row["password"] == Azubi::encrypt($password)) {
+            return true;
+        }
+        return false;
     }
 }

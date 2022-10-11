@@ -1,8 +1,7 @@
 <?php
-include "functions.php";
+include "autoloader.php";
 $website = new AzubiList();
 include "header.php";
-include "loginCheck.php";
 $azubis = $website->getAzubiData();
 $website->checkDelete($azubis);
 $startpoint = $website->getStartpoint();

@@ -20,18 +20,6 @@ class DatabaseConnection
         return self::$connection;
     }
 
-    public static function isEntryValid($entry, $column)
-    {
-        $sql = "SELECT ".$column." FROM azubi";
-        $result = self::executeMysqlQuery($sql);
-        while ($row = mysqli_fetch_row($result)) {
-            if ($row[0] == $entry) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static function executeMysqlQuery($query)
     {
         $result = mysqli_query(self::getConnection(), $query);

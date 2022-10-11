@@ -1,6 +1,6 @@
 <?php
 
-class AddAzubi extends Website
+class AddAzubi extends SecureWebsite
 {
     public function getTitle()
     {

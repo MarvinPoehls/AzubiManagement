@@ -44,8 +44,8 @@ class AzubiSite extends Website
             return "Bei Fatchip angestellt seit " . $day . " Tagen.";
         }
         if ($year == 0) {
-            return "Bei Fatchip angestellt seit " . $day . " Tagen und " . $month . " Monaten.";
+            return "Bei Fatchip angestellt seit " . $month . " Monaten und " . $day . " Tagen.";
         }
-        return "Bei Fatchip angestellt seit " . $day . " Tagen, " . $month . " Monaten und " . $year . " Jahren.";
+        return "Bei Fatchip angestellt seit " . $year . " Jahren, " . $month . " Monaten und " . $day . " Tagen.";
     }
 }

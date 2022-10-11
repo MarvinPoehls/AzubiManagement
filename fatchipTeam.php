@@ -1,8 +1,7 @@
 <?php
-include "functions.php";
+include "autoloader.php";
 $website = new AzubiTeam();
 include "header.php";
-include "loginCheck.php";
 $azubiList = $website->getAzubiList();
 
 foreach ($azubiList as $azubi) {

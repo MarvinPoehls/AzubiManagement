@@ -1,8 +1,7 @@
 <?php
-include "functions.php";
+include "autoloader.php";
 $website = new AzubiSite();
 include "header.php";
-include "loginCheck.php";
 $azubi = $website->getAzubi();
 ?>
     <div class="foto">
