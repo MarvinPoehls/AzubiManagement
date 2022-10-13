@@ -1,12 +1,11 @@
 <?php
-    include "autoloader.php";
-    $website = new AddAzubi();
-    include "header.php";
-    $azubi = $website->handleFormData();
+    $azubi = $controller->getAzubi();
 ?>
 
-<form action="<?php echo $website->getUrl("addAzubi.php") ?>" method="post">
+<form action="<?php echo $controller->getUrl("index.php") ?>" method="post">
     <input type="hidden" name="azubiId" value="<?php echo $azubi->getId() ?>">
+    <input type="hidden" name="controller" value="AddAzubi">
+    <input type="hidden" name="action" value="save">
     <div class="dataDiv">
         <div class="inputData">
             <label for="name">Vor- und Nachname: </label>
@@ -57,11 +56,11 @@
     </div>
 </form>
 <div class="clear"></div>
-<form class="delete" action="<?php echo $website->getUrl("addAzubi.php") ?>" method="post">
+<form class="delete" action="index.php" method="post">
     <p><input class="submit" type="submit" value="Löschen"></p>
+    <input type="hidden" name="action" value = "delete">
+    <input type="hidden" name="controller" value = "AddAzubi">
     <input type="hidden" name="deleteId" value = "<?php echo $azubi->getId() ?>">
 </form>
 <div class="clear"></div>
 <br> <br>
-
-<?php include "footer.php" ?>

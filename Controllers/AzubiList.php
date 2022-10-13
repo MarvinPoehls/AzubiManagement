@@ -1,20 +1,44 @@
 <?php
 
-class AzubiList extends SecureWebsite
+class AzubiList extends SecureController
 {
+    use GetAllIds;
+
     protected $title = "Azubi Liste";
+    protected $view = "azubiList";
+    protected $listSize;
+    protected $sizes = [5,10,20];
 
-    public function checkDelete($azubis)
+    public function __construct()
     {
-        if ($this->getRequestParameter("deleteId") !== false) {
-            $azubis[$this->getRequestParameter("deleteId")]->delete();
-            $this->redirect("azubiList.php");
+        if($this->secure){
+            $this->loginCheck();
         }
+        $this->listSize = $this->getRequestParameter("listSize", 10);
+    }
 
+    public function getSizes()
+    {
+        return $this->sizes;
+    }
+
+    public function getListSize()
+    {
+        return $this->listSize;
+    }
+
+    public function delete()
+    {
+        $azubi = new Azubi($this->getRequestParameter("deleteId"));
+        $azubi->delete();
+    }
+
+    public function deleteAllChecked()
+    {
+        $azubis = $this->getAzubiData(count($this->getIds()));
         foreach ($azubis as $azubi) {
             if ($this->getRequestParameter($azubi->getId()) == "on") {
                 $azubi->delete();
-                $this->redirect("azubiList.php");
             }
         }
     }
@@ -35,15 +59,15 @@ class AzubiList extends SecureWebsite
             return " ";
     }
 
-    public function getAzubiData()
+    public function getAzubiData($size = 10)
     {
         $filter = $this->getFilter();
         $startpoint = $this->getStartpoint();
-        $listSize = $this->getRequestParameter("listSize", 10);
+        $listSize = $this->getRequestParameter("listSize", $size);
         $filter = trim($filter);
         $sql = "SELECT id FROM azubi";
         if ($filter != "") {
-            $sql .= " WHERE name OR email LIKE '%".$filter."%'";
+            $sql .= " WHERE name LIKE '%".$filter."%' OR email LIKE '%".$filter."%'";
         }
         $sql .= " LIMIT ".$listSize." OFFSET ".$startpoint;
         $result = DatabaseConnection::executeMysqlQuery($sql);

@@ -1,8 +1,15 @@
 <?php
 
-class Login extends Website
+class Login extends BaseController
 {
     protected $title = "Login";
+    protected $view = "login";
+    protected $isDataWrong = false;
+
+    public function isDataWrong()
+    {
+        return $this->isDataWrong;
+    }
 
     public function checkLogin()
     {
@@ -10,14 +17,12 @@ class Login extends Website
         $email = $this->getRequestParameter("email");
         $password = $this->getRequestParameter("password");
         if ($email != null && $password != null) {
-            if (!$this->isEntryValid($email, $password)) {
-                return true;
+            if ($this->isEntryValid($email, $password)) {
+                $_SESSION["lastLogin"] = time();
+                $this->redirect("?controller=".$_SESSION["lastSite"]);
             }
-            $_SESSION["lastLogin"] = time();
-            $lastSite = $_SESSION["lastSite"];
-            $this->redirect($lastSite);
         }
-        return false;
+        $this->isDataWrong = true;
     }
 
     protected function isEntryValid($email, $password)

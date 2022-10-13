@@ -1,7 +1,20 @@
 <?php
-spl_autoload_register(function ($name) {
-    $file = __DIR__.'/classes/'.$name.'.php';
-    if (file_exists($file)) {
-        require_once($file);
+
+function autoload($class) {
+    $folders = [
+        'Classes',
+        'Controllers',
+        'Models',
+        'Traits',
+    ];
+    foreach ($folders as $folder) {
+        $path = __DIR__."/".$folder."/".$class.".php";
+        if (file_exists($path)) {
+            require_once $path;
+            return;
+        }
     }
-});
+    die("Class ".$class." not found!");
+}
+
+spl_autoload_register('autoload');

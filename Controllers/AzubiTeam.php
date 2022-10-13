@@ -1,12 +1,15 @@
 <?php
 
-class AzubiTeam extends  Website
+class AzubiTeam extends BaseController
 {
+    use GetAllIds;
+
     protected $title = "Azubi Team";
+    protected $view = "fatchipTeam";
 
     public function  getAzubiList()
     {
-        $azubiIds = $this->getAllIds();
+        $azubiIds = $this->getIds();
         $azubiList = [];
         foreach ($azubiIds as $id) {
             $azubiList[] = new Azubi($id);

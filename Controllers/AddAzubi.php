@@ -1,7 +1,9 @@
 <?php
 
-class AddAzubi extends SecureWebsite
+class AddAzubi extends SecureController
 {
+    protected $view = "addAzubi";
+
     public function getTitle()
     {
         $id = $this->getRequestParameter("azubiId");
@@ -11,13 +13,16 @@ class AddAzubi extends SecureWebsite
         return "Azubi Bearbeiten";
     }
 
-    public function handleFormData()
+    public function getAzubi()
     {
         $id = $this->getRequestParameter("azubiId");
-        $azubi = new Azubi($id);
-        if ($this->getRequestParameter("deleteId") !== false) {
-            $azubi->delete($this->getRequestParameter("deleteId"));
-        } elseif ($this->getRequestParameter("name")) {
+        return new Azubi($id);
+    }
+
+    public function save()
+    {
+        $azubi = $this->getAzubi();
+        if ($this->getRequestParameter("name")) {
             $azubi->setName($this->getRequestParameter("name"));
             $azubi->setBirthday($this->getRequestParameter("birthday"));
             $azubi->setEmail($this->getRequestParameter("email"));
@@ -29,6 +34,14 @@ class AddAzubi extends SecureWebsite
             $azubi->setPassword($this->getRequestParameter("password"));
             $azubi->save();
         }
-        return $azubi;
+    }
+
+    public function delete()
+    {
+        $deleteId = $this->getRequestParameter("deleteId");
+        if ($deleteId) {
+            $azubi = new Azubi($deleteId);
+            $azubi->delete();
+        }
     }
 }

@@ -1,7 +1,9 @@
 <?php
 
-class AzubiSite extends Website
+class AzubiSite extends BaseController
 {
+    protected $view = "fatchipSite";
+
     public function getTitle()
     {
         $id = $this->getRequestParameter("id");
@@ -13,6 +15,11 @@ class AzubiSite extends Website
     {
         $id = $this->getRequestParameter("id", 2);
         return new Azubi($id);
+    }
+
+    public function getTime()
+    {
+        return date("d.m.Y") . " - " . date("H:i") . " Uhr";
     }
 
     public function getPictureUrl($url)
