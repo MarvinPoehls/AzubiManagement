@@ -1,7 +1,9 @@
 <?php
 
-class Azubi
+class Azubi extends BaseModel
 {
+    protected $table = "azubi";
+    protected $columns = ['id', 'name', 'birthday', 'email', 'githubuser', 'employmentstart', 'pictureurl', 'password'];
     protected $id = "";
     protected $name = "";
     protected $birthday = "";
@@ -17,27 +19,34 @@ class Azubi
     {
         if ($id) {
             $this->load($id);
+            $this->loadSkills();
         }
     }
 
-    protected function load($id)
+    protected function create()
     {
-        $this->id = $id;
-        $sql = "SELECT * FROM azubi WHERE id = " . $id;
-        $result = DatabaseConnection::executeMysqlQuery($sql);
-        if (mysqli_num_rows($result) == 0) {
-            return false;
-        }
+        parent::create();
+        $this->insertSkills($this->preSkills, "pre");
+        $this->insertSkills($this->newSkills, "new");
+    }
 
-        $data = mysqli_fetch_assoc($result);
-        $this->name = $data["name"];
-        $this->birthday = $data["birthday"];
-        $this->email = $data["email"];
-        $this->githubuser = $data["githubuser"];
-        $this->employmentstart = $data["employmentstart"];
-        $this->pictureurl = $data["pictureurl"];
-        $this->password = $data["password"];
+    protected function update()
+    {
+        parent::update();
+        $this->insertSkills($this->preSkills, "pre");
+        $this->insertSkills($this->newSkills, "new");
+    }
 
+    protected function delete()
+    {
+        parent::delete();
+        $sqlSkills = "DELETE FROM azubi_skills WHERE azubi_id =" . $this->id;
+        DatabaseConnection::executeMysqlQuery($sqlSkills);
+    }
+
+    protected function loadSkills()
+    {
+        $id = $this->id;
         $sql = "SELECT skill FROM azubi_skills WHERE azubi_id= " . $id . " AND type = 'pre'";
         $result = DatabaseConnection::executeMysqlQuery($sql);
         while ($row = mysqli_fetch_row($result)) {
@@ -49,51 +58,6 @@ class Azubi
         while ($row = mysqli_fetch_row($result)) {
             $this->newSkills[] = $row[0];
         }
-    }
-
-    public function save()
-    {
-        if ($this->id == false) {
-            $this->createAzubi();
-        } else {
-            $this->updateAzubi();
-        }
-    }
-
-    public function delete($id = false)
-    {
-        if ($id === false) {
-            $id = $this->id;
-        }
-        $sqlAzubi = "DELETE FROM azubi WHERE id =" . $id;
-        $sqlSkills = "DELETE FROM azubi_skills WHERE azubi_id =" . $id;
-
-        DatabaseConnection::executeMysqlQuery($sqlAzubi);
-        DatabaseConnection::executeMysqlQuery($sqlSkills);
-    }
-
-    protected function updateAzubi()
-    {
-        $sql = "UPDATE azubi  SET name='" . $this->name . "',birthday='" . $this->birthday . "',email='" . $this->email . "',
-                githubuser='" . $this->githubuser . "',employmentstart='" . $this->employmentstart . "',pictureurl='" . $this->pictureurl . "',
-                password='" . self::encrypt($this->password) . "' WHERE id =" . $this->id;
-        DatabaseConnection::executeMysqlQuery($sql);
-
-        $this->insertSkills($this->preSkills, "pre");
-        $this->insertSkills($this->newSkills, "new");
-    }
-
-    protected function createAzubi()
-    {
-        $this->password = self::encrypt($this->password);
-
-        $sql = "INSERT INTO azubi (name, birthday, email, githubuser, employmentstart, pictureurl, password) 
-                VALUES ('$this->name', '$this->birthday', '$this->email', '$this->githubuser', '$this->employmentstart', '$this->pictureurl', '$this->password')";
-        DatabaseConnection::executeMysqlQuery($sql);
-        $this->id = mysqli_insert_id(DatabaseConnection::getConnection());
-
-        $this->insertSkills($this->preSkills, "pre");
-        $this->insertSkills($this->newSkills, "new");
     }
 
     protected function insertSkills($skills, $type)
@@ -121,11 +85,6 @@ class Azubi
             return true;
         }
         return false;
-    }
-
-    public static function encrypt($password)
-    {
-        return md5($password . Configuration::getConfigParameter("salt"));
     }
 
     public function getId()
