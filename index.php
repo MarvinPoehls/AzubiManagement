@@ -9,11 +9,19 @@ if (isset($_REQUEST['controller'])) {
 
 $controllerObject = new $controller();
 
-if (isset($_REQUEST['action'])) {
-    $action = $_REQUEST['action'];
-    if (method_exists($controllerObject, $action)) {
-        $controllerObject->$action();
+try {
+    if (isset($_REQUEST['action'])) {
+        $action = $_REQUEST['action'];
+        if (method_exists($controllerObject, $action)) {
+            $controllerObject->$action();
+        }
     }
+} catch (Exception $exception) {
+    include __DIR__."/Views/userError.php";
 }
 
-$controllerObject->render();
+try {
+    $controllerObject->render();
+} catch (Exception $exception) {
+    include __DIR__."/Views/error.php";
+}

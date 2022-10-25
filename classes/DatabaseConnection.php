@@ -11,21 +11,21 @@ class DatabaseConnection
             $username = Configuration::getConfigParameter("username");
             $password = Configuration::getConfigParameter("password");
             $dbname = Configuration::getConfigParameter("dbname");
-            self::$connection = mysqli_connect($servername, $username, $password, $dbname);
 
-            if (!self::$connection) {
-                die("Connection failed: " . mysqli_connect_error());
-            }
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+            self::$connection = mysqli_connect($servername, $username, $password, $dbname);
         }
         return self::$connection;
     }
 
     public static function executeMysqlQuery($query)
     {
-        $result = mysqli_query(self::getConnection(), $query);
-        $error = mysqli_error(self::getConnection());
-        if (!empty($error)) {
-            echo "<h1>Error with Query:".$query." ".$error."</h1>";
+        try {
+            $result = mysqli_query(self::getConnection(), $query);
+        } catch (mysqli_sql_exception $exception){
+            $error = mysqli_error(self::getConnection());
+            throw new mysqli_sql_exception("Error with Query: '".$query."'<br><br>".$error);
         }
         return $result;
     }

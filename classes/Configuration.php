@@ -15,7 +15,7 @@ class Configuration
             }
             return false;
         }
-        die("Config Data is missing.");
+        throw new Exception("Config Data is missing.");
     }
 
     protected static function loadData(){

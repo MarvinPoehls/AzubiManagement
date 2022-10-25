@@ -12,19 +12,16 @@ class BaseController
 
     public function render()
     {
-        if ($this->view === false) {
-            die("NO VIEW FOUND");
-        }
-
         $viewPath = __DIR__."/../Views/".$this->view.".php";
-        if (!file_exists($viewPath)) {
-            die("VIEW FILE NOT FOUND");
-        }
 
         $controller = $this;
 
         include __DIR__."/../Views/header.php";
-        include $viewPath;
+        try {
+            include $viewPath;
+        } catch (Exception $exception) {
+            include __DIR__."/../Views/error.php";
+        }
         include __DIR__."/../Views/footer.php";
     }
 

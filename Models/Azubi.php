@@ -164,7 +164,7 @@ class Azubi extends BaseModel
 
     public function setPassword($password)
     {
-        $this->password = $password;
+        $this->password = self::encrypt($password);
     }
 
     public function getPreSkills($implode = false)
