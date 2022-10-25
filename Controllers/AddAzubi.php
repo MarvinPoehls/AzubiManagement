@@ -27,7 +27,7 @@ class AddAzubi extends SecureController
             throw new Exception("You have to input a name");
         }
         if (!$this->isEmailValid()) {
-            throw new Exception("Wrong email pattern. Write your email like: 'example@email.abc'");
+            throw new Exception("Wrong email. Write your email like: 'example@email.abc'");
         }
         if (!$this->isBirthdayValid()) {
             throw new Exception("Wrong birthday pattern. Write your birthday like: 'dd.mm.yyyy'.");

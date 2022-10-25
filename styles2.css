@@ -518,27 +518,8 @@ tr:nth-child(odd) {
     color: black;
 }
 
-.userError h1{
-    color: black;
-}
-
 .error hr{
     background-color: #2a2727;
     border-style: none;
     height: 1px;
-}
-
-.userError hr{
-    background-color: #2a2727;
-    border-style: none;
-    height: 1px;
-}
-
-.userError {
-    margin: 20px;
-    background-color: #fff37e;
-    border: 2px solid #aba53a;
-    padding: 20px;
-    border-radius: 3px;
-    font-weight: bold;
 }

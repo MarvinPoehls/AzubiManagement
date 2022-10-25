@@ -10,13 +10,16 @@ class BaseController
         return $this->view;
     }
 
-    public function render()
+    public function render($exception)
     {
         $viewPath = __DIR__."/../Views/".$this->view.".php";
 
         $controller = $this;
 
         include __DIR__."/../Views/header.php";
+        if (isset($exception)) {
+            include __DIR__."/../Views/error.php";
+        }
         try {
             include $viewPath;
         } catch (Exception $exception) {

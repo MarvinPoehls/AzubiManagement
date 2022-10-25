@@ -9,6 +9,8 @@ if (isset($_REQUEST['controller'])) {
 
 $controllerObject = new $controller();
 
+$errorException = null;
+
 try {
     if (isset($_REQUEST['action'])) {
         $action = $_REQUEST['action'];
@@ -17,11 +19,11 @@ try {
         }
     }
 } catch (Exception $exception) {
-    include __DIR__."/Views/userError.php";
+    $errorException = $exception;
 }
 
 try {
-    $controllerObject->render();
+    $controllerObject->render($errorException);
 } catch (Exception $exception) {
     include __DIR__."/Views/error.php";
 }
