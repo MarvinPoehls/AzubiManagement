@@ -4,27 +4,25 @@ class BaseController
 {
     protected $title = "Azubi Portal";
     protected $view = false;
+    protected $exception = null;
 
-    public function getView()
-    {
-        return $this->view;
-    }
-
-    public function render($exception)
+    public function render()
     {
         $viewPath = __DIR__."/../Views/".$this->view.".php";
 
         $controller = $this;
 
-        include __DIR__."/../Views/header.php";
-        if (isset($exception)) {
-            include __DIR__."/../Views/error.php";
-        }
+        ob_start();
         try {
             include $viewPath;
-        } catch (Exception $exception) {
-            include __DIR__."/../Views/error.php";
+        } catch (Throwable $exception) {
+            $this->setException($exception);
         }
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        include __DIR__."/../Views/header.php";
+        echo $content;
         include __DIR__."/../Views/footer.php";
     }
 
@@ -42,6 +40,11 @@ class BaseController
         exit();
     }
 
+    public function getView()
+    {
+        return $this->view;
+    }
+
     public function getUrl($data)
     {
         return Configuration::getConfigParameter("path") . $data;
@@ -50,5 +53,15 @@ class BaseController
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    public function setException($exception)
+    {
+        $this->exception = $exception;
     }
 }

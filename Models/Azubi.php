@@ -23,25 +23,31 @@ class Azubi extends BaseModel
         }
     }
 
-    protected function create()
+    public function create()
     {
         parent::create();
         $this->insertSkills($this->preSkills, "pre");
         $this->insertSkills($this->newSkills, "new");
     }
 
-    protected function update()
+    public function update()
     {
         parent::update();
         $this->insertSkills($this->preSkills, "pre");
         $this->insertSkills($this->newSkills, "new");
     }
 
-    protected function delete()
+    public function delete()
     {
         parent::delete();
         $sqlSkills = "DELETE FROM azubi_skills WHERE azubi_id =" . $this->id;
         DatabaseConnection::executeMysqlQuery($sqlSkills);
+    }
+
+    public function deleteSkill($name, $type)
+    {
+        $sql = "DELETE FROM azubi_skills WHERE azubi_id =" . $this->id . " AND skill =" . $name . " AND type =" . $type;
+        return DatabaseConnection::executeMysqlQuery($sql);
     }
 
     protected function loadSkills()
@@ -69,10 +75,8 @@ class Azubi extends BaseModel
             }
         }
 
-        $sql = "DELETE FROM azubi_skills WHERE azubi_id = " . $this->id . " AND type ='" . $type . "' AND skill NOT IN('" . implode(
-                "','",
-                $skills
-            ) . "');";
+        $sql = "DELETE FROM azubi_skills WHERE azubi_id = " . $this->id . " AND type ='" . $type . "' AND skill NOT IN('" .
+            implode("','", $skills) . "');";
         DatabaseConnection::executeMysqlQuery($sql);
     }
 

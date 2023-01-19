@@ -7,7 +7,7 @@ class AzubiTeam extends BaseController
     protected $title = "Azubi Team";
     protected $view = "fatchipTeam";
 
-    public function  getAzubiList()
+    public function getAzubiList()
     {
         $azubiIds = $this->getIds();
         $azubiList = [];

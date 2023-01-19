@@ -6,9 +6,7 @@ class AzubiSite extends BaseController
 
     public function getTitle()
     {
-        $id = $this->getRequestParameter("id");
-        $azubi = new Azubi($id);
-        return $azubi->getName();
+        return "Azubi";
     }
 
     public function getAzubi()

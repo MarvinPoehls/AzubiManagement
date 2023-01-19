@@ -35,4 +35,9 @@ class Login extends BaseController
         }
         return false;
     }
+
+    public function logout()
+    {
+
+    }
 }

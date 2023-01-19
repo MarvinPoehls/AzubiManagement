@@ -1,5 +1,8 @@
-<div class="error">
-    <h1>ERROR</h1>
-    <hr>
-    <p>Message: <?php echo $exception->getMessage(); ?></p>
+<div class="card bg-danger text-dark">
+    <div class="card-header">
+        ERROR
+    </div>
+    <div class="card-body">
+        <p class="card-text">Message: <?php echo $controller->getException()->getMessage(); ?></p>
+    </div>
 </div>

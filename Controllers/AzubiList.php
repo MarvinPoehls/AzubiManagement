@@ -7,7 +7,7 @@ class AzubiList extends SecureController
     protected $title = "Azubi Liste";
     protected $view = "azubiList";
     protected $listSize;
-    protected $sizes = [5,10,20];
+    protected $sizes = [1,2,5,10,20];
 
     public function __construct()
     {
@@ -25,6 +25,11 @@ class AzubiList extends SecureController
     public function getListSize()
     {
         return $this->listSize;
+    }
+
+    public function setListSize($listSize): void
+    {
+        $this->listSize = $listSize;
     }
 
     public function delete()
@@ -71,6 +76,7 @@ class AzubiList extends SecureController
         }
         $sql .= " LIMIT ".$listSize." OFFSET ".$startpoint;
         $result = DatabaseConnection::executeMysqlQuery($sql);
+        $azubis = [];
         while ($row = mysqli_fetch_row($result)) {
             $azubis[$row[0]] = new Azubi($row[0]);
         }

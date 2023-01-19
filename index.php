@@ -23,7 +23,7 @@ try {
 }
 
 try {
-    $controllerObject->render($errorException);
+    $controllerObject->render();
 } catch (Exception $exception) {
     include __DIR__."/Views/error.php";
 }

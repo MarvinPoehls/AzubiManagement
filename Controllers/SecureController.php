@@ -2,7 +2,7 @@
 
 class SecureController extends BaseController
 {
-    protected $secure = true;
+    protected $secure = false;
 
     public function __construct()
     {

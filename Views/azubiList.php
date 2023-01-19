@@ -1,79 +1,95 @@
 <?php
 $azubis = $controller->getAzubiData();
 ?>
-<form class="searchbar" action="<?php echo $controller->getUrl("index.php") ?>" method="post">
-    <input class="searchButton" type="submit" value="">
-    <input type="hidden" name="controller" value="azubiList">
-    <input type="hidden" name="listSize" value="<?php echo $controller->getListSize() ?>">
-    <input type="hidden" name="startpoint" value="<?php echo $controller->getStartpoint() ?>">
-    <input class="search" name="filter" type="search" placeholder="Search..">
-</form>
-<br>
+<div class="mb-3">
+    <form action="<?php echo $controller->getUrl("index.php") ?>" method="get" id="searchForm">
+        <input type="hidden" name="controller" value="azubiList">
+        <input type="hidden" name="listSize" value="<?php echo $controller->getListSize() ?>">
+        <input type="hidden" name="startpoint" value="<?php echo $controller->getStartpoint() ?>">
+        <div class="row my-2">
+            <div class="col-sm-1 col-md-2 col-3">
+                <input class="btn btn-dark float-start" type="submit" value="Search">
+            </div>
+            <div class="col-sm-11 col-md-10 col-9" id="searchBox">
+                <input class="form-control float-end" id="search" value="<?php echo $controller->getFilter(); ?>" onfocus="autofill()" oninput="autofill()" name="filter" type="search" placeholder="Search.." autocomplete="off">
+                <div class="mt-5 border border-light bg-white rounded position-absolute float-end w-50" id="suggestions"  style="display: none"></div>
+            </div>
+        </div>
+    </form>
+</div>
 <form action="<?php echo $controller->getUrl("index.php") ?>" method="post">
     <input type="hidden" name="controller" value="azubiList">
-    <table class="azubiTable">
-        <tr>
-            <td class="tableHeader"></td>
-            <td class="tableHeader">Name</td>
-            <td class="tableHeader">Geburtstag</td>
-            <td class="tableHeader">Email</td>
-            <td class="tableHeader"></td>
-        </tr>
-        <?php foreach ($azubis as $azubi) { ?>
-            <tr>
-                <td class="tableCheckbox"><input type="checkbox" name="<?php echo $azubi->getId() ?>"></td>
-                <td class="tableData"><?php echo $azubi->getName() ?></td>
-                <td class="tableData"><?php echo $azubi->getBirthday() ?></td>
-                <td class="tableData"><?php echo $azubi->getEmail() ?></td>
-                <td class="tableButtons">
-                    <a href="<?php echo $controller->getUrl("index.php?controller=addAzubi&azubiId=" . $azubi->getId()) ?>">
-                        <img class='editButton' src='https://cdn-icons-png.flaticon.com/512/84/84380.png' alt='edit'>
+    <div class="row">
+        <div class="col-12">
+            <table id="azubiTable" class="table table-striped border-top border-bottom border-end">
+                <tr class="table-dark">
+                    <th></th>
+                    <th>Name</th>
+                    <th>Geburtstag</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+                <?php foreach ($azubis as $azubi) { ?>
+                    <tr id="<?php echo $azubi->getId() ?>">
+                        <td><input type="checkbox" name="<?php echo $azubi->getId() ?>"></td>
+                        <td><?php echo $azubi->getName() ?></td>
+                        <td><?php echo $azubi->getBirthday() ?></td>
+                        <td><?php echo $azubi->getEmail() ?></td>
+                        <td>
+                            <button type="button" class="btn btn-danger float-end mx-2" onclick="deleteAzubi(<?php echo $azubi->getId() ?>)" id="delete"><i class="bi-trash text-dark"></i></button>
+                            <a class="btn btn-success float-end" href="<?php echo $controller->getUrl("index.php?controller=addAzubi&azubiId=" . $azubi->getId()) ?>">
+                                <i class="bi-pencil text-dark"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </table>
+        </div>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <?php if ($controller->getStartpoint() != 0) { ?>
+                <li class="page-item">
+                    <a class="page-link text-dark" href="<?php echo $controller->getUrl("index.php?controller=".$controller->getView()."&startpoint=".($controller->getStartpoint() - $this->getListSize())."&listSize=".$this->getListSize())?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
                     </a>
-                    <a href="<?php echo $controller->getUrl("index.php?controller=azubiList&deleteId=" . $azubi->getId() . "&action=delete") ?>">
-                        <img class='deleteButton' src='https://cdn-icons-png.flaticon.com/512/1345/1345874.png' alt='edit'>
+                </li>
+            <?php } ?>
+            <?php for ($i = 0; $i < $controller->countIds() / $this->getListSize(); $i++) { ?>
+                <li class="page-item"><a class="page-link text-dark" href="<?php echo $controller->getUrl("index.php?controller=".$controller->getView()."&startpoint=".($i * $this->getListSize())."&listSize=".$this->getListSize()) ?>"><?php echo ($i + 1) ?></a></li>
+            <?php } ?>
+            <?php if ($controller->getStartpoint() < $controller->countIds() - $this->getListSize()) { ?>
+                <li class="page-item">
+                    <a class="page-link text-dark" href="<?php echo $controller->getUrl("index.php?controller=".$controller->getView()."&startpoint=".($controller->getStartpoint() + $this->getListSize())."&listSize=".$this->getListSize())?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
                     </a>
-                </td>
-            </tr>
-        <?php } ?>
-    </table>
-    <div class="clear"></div>
-    <div>
-        <input class="deleteUserButton" type="submit" value="Ausgewählte Azubis löschen">
+                </li>
+            <?php } ?>
+        </ul>
+    </nav>
+    <div class="row">
+        <div class="col-lg-3 col-7">
+            <input class="btn btn-dark float-start my-2" type="submit" value="Ausgewählte Azubis löschen">
+        </div>
         <input type="hidden" name="action" value="deleteAllChecked">
-        <a href="<?php echo $controller->getUrl("index.php?controller=addAzubi") ?>">
-            <input class="newUserButton" type="button" value="Neuen Azubi anlegen">
-        </a>
-    </div>
-    <div class="clear"></div>
-    <div class="pagination">
-        <?php if ($controller->getStartpoint() != 0) { ?>
-            <a href="<?php echo $controller->getUrl("index.php?controller=".$controller->getView()."&startpoint=".($controller->getStartpoint() - $this->getListSize())."&listSize=".$this->getListSize())?>">
-                <img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39092/preview.png' alt='vor'>
+        <div class="col-lg-3 col-7">
+            <a href="<?php echo $controller->getUrl("index.php?controller=addAzubi") ?>">
+                <input class="btn btn-dark float-start my-2" type="button" value="Neuen Azubi anlegen">
             </a>
-        <?php } ?>
-        <?php for ($i = 0; $i < $controller->countIds() / $this->getListSize(); $i++) { ?>
-            <a href='<?php echo $controller->getUrl("index.php?controller=".$controller->getView()."&startpoint=".($i * $this->getListSize())."&listSize=".$this->getListSize()) ?>'>
-                <input class='paginationButton' name='startingpoint' type='button' value='<?php echo ($i + 1) ?>'>
-            </a>
-        <?php } ?>
-        <?php if ($controller->getStartpoint() < $controller->countIds() - $this->getListSize()) { ?>
-            <a href="<?php echo $controller->getUrl("index.php?controller=".$controller->getView()."&startpoint=".($controller->getStartpoint() + $this->getListSize())."&listSize=".$this->getListSize())?>">
-                <img class="paginationArrow" src='https://d29fhpw069ctt2.cloudfront.net/icon/image/39093/preview.png' alt='vor'>
-            </a>
-        <?php } ?>
+        </div>
     </div>
 </form>
-<form action="<?php echo $controller->getUrl("index.php") ?>" method="post">
+<form action="<?php echo $controller->getUrl("index.php") ?>" method="post" id="listSizeForm">
     <input type="hidden" name="controller" value="azubiList">
-    <div class="listSizeMenu">
-        <label for="listSize">Tabellengröße: </label>
-        <select id="listSize" name="listSize">
+    <div>
+        <label class="d-block" for="listSize">Tabellengröße: </label>
+        <select onchange="submit('listSizeForm')" class="btn btn-dark float-start" id="listSize" name="listSize">
             <?php foreach ($controller->getSizes() as $size) { ?>
                 <option value="<?php echo $size; ?>" <?php if($size == $controller->getListSize()){ echo "selected"; } ?>>
                     <?php echo $size; ?>
                 </option>
             <?php } ?>
         </select>
-        <input class="submitSize" type="submit" value="-">
     </div>
+    <script src="js/azubiList.js"></script>
 </form>

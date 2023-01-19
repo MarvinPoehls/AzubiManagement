@@ -23,7 +23,7 @@ class AddAzubi extends SecureController
     {
         $azubi = $this->getAzubi();
 
-        if ($this->getRequestParameter("name") == false){
+        if (!$this->getRequestParameter("name")){
             throw new Exception("You have to input a name");
         }
         if (!$this->isEmailValid()) {
@@ -42,8 +42,8 @@ class AddAzubi extends SecureController
         $azubi->setGithubuser($this->getRequestParameter("githubuser"));
         $azubi->setEmploymentstart($this->getRequestParameter("employmentstart"));
         $azubi->setPictureurl($this->getRequestParameter("pictureurl"));
-        $azubi->setPreSkills(explode(",", $this->getRequestParameter("pre")));
-        $azubi->setNewSkills(explode(",", $this->getRequestParameter("new")));
+        $azubi->setPreSkills($this->getRequestParameter("preSkills"));
+        $azubi->setNewSkills($this->getRequestParameter("newSkills"));
         $azubi->setPassword($this->getRequestParameter("password"));
         $azubi->save();
     }
@@ -82,5 +82,13 @@ class AddAzubi extends SecureController
             return true;
         }
         return false;
+    }
+
+    public function deleteSkill($name, $type)
+    {
+        if ($this->getRequestParameter("azubiId")) {
+            $azubi = new Azubi($this->getRequestParameter("azubiId"));
+            return $azubi->deleteSkill($name, $type);
+        }
     }
 }
