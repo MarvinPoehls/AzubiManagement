@@ -1,54 +1,46 @@
 function submit(formId) {
-    document.getElementById(formId).submit();
+    $("#" + formId).submit();
 }
 
 function deleteAzubi(id) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'index.php?controller=LoadNextAzubi', true);
-
-    xhr.onload = function () {
-        if (this.status === 200) {
-            document.getElementById(id).remove();
-            console.log(xhr.responseText);
-            //let nextAzubi = JSON.parse(xhr.responseText);
+    $.ajax({
+        url: 'index.php?controller=AzubiList&action=delete&deleteId=' + id,
+        type: 'GET',
+        success: function (data) {
+            $('#' + id).remove();
+            console.log(data);
+            //let nextAzubi = JSON.parse(data);
             //addToAzubiTable(nextAzubi);
         }
-    }
-
-    xhr.send();
+    });
 }
 
 function addToAzubiTable(azubi) {
     console.log("hi");
 }
 
-function setVisibility(status) {
-    document.getElementById("suggestions").style.display = status;
-}
-
 function autofill() {
-    deleteSuggestions();
-    let searchValue = document.getElementById("search").value;
+    let suggestions = $("#suggestions");
+    suggestions.html("");
+    let searchValue = $("#search").val();
     if (searchValue.length > 1) {
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', 'index.php?controller=SearchSuggestion&filter='+ searchValue, true);
-
-        xhr.onload = function () {
-            if (this.status === 200) {
-                let names = JSON.parse(this.responseText);
-                for (let name of names) {
-                    let button = document.createElement("button");
-                    button.setAttribute('type', 'button');
-                    button.setAttribute('id', removeTag("strong", name));
-                    button.setAttribute('onclick', 'searchName("'+ removeTag("strong", name) +'")');
-                    button.setAttribute('class', "btn btn-white border border-bottom d-block w-100 text-start");
-                    button.innerHTML = name;
-                    document.getElementById("suggestions").appendChild(button);
-                }
+        $.ajax({
+            type: 'GET',
+            url: 'index.php?controller=SearchSuggestion&filter='+ searchValue,
+            success: function (data) {
+                let names = JSON.parse(data);
+                $.each(names, function (index, element) {
+                    let button = $("<button/>");
+                    button.attr('type', 'button');
+                    button.attr('id', removeTag("strong", element));
+                    button.attr('onclick', 'searchName("'+ removeTag("strong", element) +'")');
+                    button.attr('class', "btn btn-white border border-bottom w-100 text-start");
+                    button.html(element);
+                    suggestions.append(button);
+                });
+                suggestions.show();
             }
-        }
-        xhr.send();
+        });
     }
 }
 
@@ -58,18 +50,14 @@ function removeTag(tag, string) {
 }
 
 function searchName(filter) {
-    document.getElementById("search").value = filter;
+    $("#search").val(filter);
     submit("searchForm");
 }
 
-function deleteSuggestions() {
-    document.getElementById("suggestions").innerHTML = "";
-}
-
-document.addEventListener('click', function(e){
-    if (document.getElementById('searchBox').contains(e.target)){
-        setVisibility("block");
-    } else{
-        setVisibility("none");
+$(document).click(function(e) {
+    if (document.getElementById('searchBox').contains(e.target)) {
+        $('#suggestions').show();
+    } else {
+        $('#suggestions').hide();
     }
 });

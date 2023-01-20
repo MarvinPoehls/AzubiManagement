@@ -12,7 +12,7 @@ $azubis = $controller->getAzubiData();
             </div>
             <div class="col-sm-11 col-md-10 col-9" id="searchBox">
                 <input class="form-control float-end" id="search" value="<?php echo $controller->getFilter(); ?>" onfocus="autofill()" oninput="autofill()" name="filter" type="search" placeholder="Search.." autocomplete="off">
-                <div class="mt-5 border border-light bg-white rounded position-absolute float-end w-50" id="suggestions"  style="display: none"></div>
+                <div class="mt-5 border border-light bg-white rounded position-absolute float-end w-50" id="suggestions"></div>
             </div>
         </div>
     </form>

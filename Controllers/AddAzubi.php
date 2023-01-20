@@ -46,6 +46,8 @@ class AddAzubi extends SecureController
         $azubi->setNewSkills($this->getRequestParameter("newSkills"));
         $azubi->setPassword($this->getRequestParameter("password"));
         $azubi->save();
+
+        $this->redirect('index.php?controller=addAzubi&azubiId=' . $azubi->getId());
     }
 
     public function delete()

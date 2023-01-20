@@ -110,7 +110,7 @@
         </div>
     </div>
     <input class="btn btn-primary mb-2" type="submit" value="Speichern">
-    <input type="hidden" name="mode" value="save">
+    <input type="hidden" name="action" value="save">
 </form>
 <div class="clear"></div>
 <form action="<?php echo $controller->getUrl("index.php") ?>" method="post">

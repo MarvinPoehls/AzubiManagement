@@ -1,52 +1,51 @@
 function addSkill(parentId) {
-    let div = document.createElement("div");
-    div.setAttribute("class", "row my-2");
+    let div = $("<div></div>");
+    div.attr("class", "row my-2");
     let id = getUniqueId();
-    div.setAttribute("id", id);
-    document.getElementById(parentId).appendChild(div);
+    div.attr("id", id);
+    $("#" + parentId).append(div);
 
-    let inputCol = document.createElement("div");
-    inputCol.setAttribute("class", "col-10");
-    div.appendChild(inputCol);
+    let inputCol = $("<div></div>");
+    inputCol.attr("class", "col-10");
+    div.append(inputCol);
 
-    let skill = document.createElement("input");
-    skill.setAttribute("class", "form-control");
-    skill.setAttribute("type", "text");
+    let skill = $("<input/>");
+    skill.attr("class", "form-control");
+    skill.attr("type", "text");
     if (parentId === "preSkills") {
-        skill.setAttribute("name", "preSkills[]")
+        skill.attr("name", "preSkills[]")
     }
     if (parentId === "newSkills") {
-        skill.setAttribute("name", "newSkills[]")
+        skill.attr("name", "newSkills[]")
     }
-    inputCol.appendChild(skill);
+    inputCol.append(skill);
 
-    let buttonCol = document.createElement("div");
-    buttonCol.setAttribute("class", "col-2");
-    div.appendChild(buttonCol);
+    let buttonCol = $("<div></div>");
+    buttonCol.attr("class", "col-2");
+    div.append(buttonCol);
 
-    let deleteSkillButton = document.createElement("button");
-    deleteSkillButton.setAttribute("class", "btn btn-danger");
-    deleteSkillButton.setAttribute("type", "button");
-    deleteSkillButton.setAttribute("onclick", "deleteSkill('" + id + "')");
-    buttonCol.appendChild(deleteSkillButton);
+    let deleteSkillButton = $("<button/>");
+    deleteSkillButton.attr("class", "btn btn-danger");
+    deleteSkillButton.attr("type", "button");
+    deleteSkillButton.attr("onclick", "deleteSkill('" + id + "')");
+    buttonCol.append(deleteSkillButton);
 
-    let icon = document.createElement("i");
-    icon.setAttribute("class", "bi bi-dash-circle")
-    deleteSkillButton.appendChild(icon);
+    let icon = $("<i></i>");
+    icon.attr("class", "bi bi-dash-circle");
+    deleteSkillButton.append(icon);
 }
 
 function deleteSkill(id) {
-    let skill = document.getElementById(id)
+    let skill = $("#" + id);
     let splitedId = id.split(".");
     let type = splitedId[0];
-    let skillName = skill.querySelector(".form-control").value;
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'index.php?controller=AddAzubi&action=deleteSkill(' + skillName + "," + type + ')', true);
-
-    xhr.send();
-
+    let skillName = skill.find(".form-control").value;
     skill.remove();
+
+    $.ajax({
+        type: 'GET',
+        url: 'index.php?controller=AddAzubi&action=deleteSkill(' + skillName + "," + type + ')',
+    });
 }
 
 function getUniqueId(){
